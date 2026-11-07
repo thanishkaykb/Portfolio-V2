@@ -1,8 +1,11 @@
 import GitHubCard from "./GitHubCard";
 import SectionHeading from "../ui/SectionHeading";
-import { githubContributions as gh } from "../../lib/github-contributions";
+import { timeAgo, useGithubActivity } from "../../lib/github-live";
 
 export default function AbilitySection() {
+  const { activity: gh, live } = useGithubActivity();
+  const repositories = live ? gh.repositories ?? [] : [];
+
   return (
     <section id="ability" className="relative border-t border-line py-20 md:py-28">
       <div className="container-x">
@@ -18,7 +21,7 @@ export default function AbilitySection() {
                   <span className="text-gold">in one card.</span>
                 </>
               }
-              sub={`Every green square is a real commit, pull request or review. ${gh.total.toLocaleString("en-US")} contributions across ${gh.activeDays} active days in the last twelve months, pulled from GitHub's own calendar, not typed by hand.`}
+              sub={`Every gold square is a real commit, pull request or review. ${gh.total.toLocaleString("en-US")} contributions across ${gh.activeDays} active days in the last twelve months, pulled from GitHub's own calendar, not typed by hand.`}
             />
 
             <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6">
@@ -44,8 +47,9 @@ export default function AbilitySection() {
             </dl>
 
             <p className="mt-8 max-w-md text-xs leading-relaxed text-muted">
-              This is the same graph that lives on github.com/{gh.handle}, public work only, so
-              private repositories never inflate the count.
+              This is the same graph that lives on github.com/{gh.handle}. It is read from GitHub's
+              public calendar, so new work appears here without a rebuild. Private repositories
+              never inflate the count.
             </p>
 
             <a
@@ -59,6 +63,40 @@ export default function AbilitySection() {
                 ↗
               </span>
             </a>
+
+            {repositories.length > 0 && (
+              <div className="mt-9 border-t border-line pt-5">
+                <div className="flex items-baseline justify-between gap-3">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-gold/80">
+                    Latest on GitHub
+                  </p>
+                  {typeof gh.repositoryCount === "number" && (
+                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">
+                      {gh.repositoryCount} public {gh.repositoryCount === 1 ? "repo" : "repos"}
+                    </p>
+                  )}
+                </div>
+                <ul className="mt-2">
+                  {repositories.map((repo) => (
+                    <li key={repo.name} className="border-t border-line/70">
+                      <a
+                        href={repo.url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="group flex items-baseline justify-between gap-4 py-2.5"
+                      >
+                        <span className="min-w-0 truncate text-sm text-bone transition-colors group-hover:text-gold">
+                          {repo.name}
+                        </span>
+                        <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-muted">
+                          {repo.language || "code"} · {timeAgo(repo.pushedAt)}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           <div className="lg:col-span-6">

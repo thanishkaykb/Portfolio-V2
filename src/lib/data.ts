@@ -43,9 +43,6 @@ export type DoorCategory = {
   title: string;
   short: string;
   kicker: string;
-  statement: string;
-  /** Optional longer lead, shown under the door title. */
-  intro?: string;
   details: string;
   skills: { name: string; note: string }[];
   projectSlugs: string[];
@@ -60,9 +57,6 @@ export const doors: DoorCategory[] = [
     title: "Website Development",
     short: "Websites",
     kicker: "Interfaces, built to be used",
-    statement: "Fast, responsive, readable websites, from first layout to deployment.",
-    intro:
-      "I build the whole page, not only the visible layer: layout and typography first, then React components, routing, data and the deploy. Every project behind this door is a real, public build you can open, and each one says what I actually did on it. If something is a team effort, a class project or an experiment, the entry says that too.",
     details:
       "My primary craft. I build websites in React and TypeScript with Vite or Next.js, style them with Tailwind CSS, and care about the details people feel rather than see: rhythm, contrast, keyboard access, loading behaviour and layouts that survive a 360px screen.",
     skills: [
@@ -81,9 +75,6 @@ export const doors: DoorCategory[] = [
     title: "Creative Development",
     short: "Creative",
     kicker: "Experiments with a browser",
-    statement: "3D, motion and browser-native APIs used for something worth feeling.",
-    intro:
-      "The browser is only half of it. I write poetry and I draw: four poems published on PoetrySoup, two anthology publications with Writer's Pocket, and six features in the newspaper for my poetry. The writing and the artwork are below, next to the experiments that keep the craft moving.",
     details:
       "Where I test ideas: Three.js scenes, scroll-driven storytelling, hand tracking in the browser, colour-memory games, type experiments. Creative work is how I keep the craft moving, and how most of my product instincts get built.",
     skills: [
@@ -102,7 +93,6 @@ export const doors: DoorCategory[] = [
     title: "Leadership and Events",
     short: "Leadership",
     kicker: "Rooms I help run",
-    statement: "Leadership, events and the communities I help build.",
     details: "",
     skills: [],
     projectSlugs: [],
@@ -476,6 +466,7 @@ const catalog: Project[] = [
     contribution:
       "Designed and developed the official event website, and worked as a student coordinator and event organiser for Intellect Hack 2026.",
     repo: "https://github.com/thanishkaykb/Intellect-Hack-2026",
+    live: "https://intellect-hack-2026.vercel.app/",
     featured: true,
     motif: "event",
     accent: "#FFC928",
@@ -764,10 +755,17 @@ export const timeline: TimelineEntry[] = [
   },
   {
     period: "2026 onwards",
-    title: "UBA & UiAutomistix Club",
-    org: "Unnat Bharat Abhiyan · UiAutomistix Club",
-    body: "A MAGIC member at Unnat Bharat Abhiyan, and an Advocate and Mastermind at the UiAutomistix Club, helping shape the rooms where students learn, build and show their work.",
-    tags: ["Community", "MAGIC", "Leadership"],
+    title: "MAGIC member at Unnat Bharat Abhiyan",
+    org: "Unnat Bharat Abhiyan, Sri Sairam Engineering College",
+    body: "As a MAGIC Member of Unnat Bharat Abhiyan at Sri Sairam Engineering College and the Advocate for Sirukalathur, one of the villages associated with our institution, I aspire to be a voice for the community and a catalyst for meaningful change. I believe in understanding grassroots challenges, connecting people with opportunities, and turning ideas into initiatives that create real impact. Through active community engagement, collaboration, and innovative thinking, I hope to contribute to the village's sustainable development, empower its people, and help build a stronger, more inclusive future. For me, this role is more than a responsibility; it is an opportunity to give back to society and be part of a change that truly matters.",
+    tags: ["Community", "MAGIC", "UBA"],
+  },
+  {
+    period: "2026 onwards",
+    title: "MAGIC member at UiAutomisticx Club",
+    org: "UiAutomisticx Club",
+    body: "MAGIC member at UiAutomisticx Club, where I am the Mastermind. I will make a big contribution here and drive real change in this club.",
+    tags: ["Community", "MAGIC", "UiAutomisticx"],
   },
 ];
 

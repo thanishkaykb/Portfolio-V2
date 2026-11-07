@@ -99,11 +99,11 @@ export default function CaseStudy({ project, onClose, onChange }: Props) {
                   >
                     {project.name}
                   </h2>
-                  <p className="mt-4 max-w-xl text-lg leading-relaxed text-bone/85">
-                    {project.tagline}
+                  <p className="mt-4 text-sm leading-relaxed text-bone/85">
+                    {project.description}
                   </p>
 
-                  <div className="mt-8 flex flex-wrap gap-3">
+                  <div className="mt-6 flex flex-wrap gap-3">
                     {project.live && (
                       <a
                         href={project.live}
@@ -121,7 +121,7 @@ export default function CaseStudy({ project, onClose, onChange }: Props) {
                         rel="noreferrer noopener"
                         className="inline-flex items-center gap-2 border border-line px-5 py-3 text-[11px] uppercase tracking-[0.16em] text-bone transition-colors hover:border-gold hover:text-gold"
                       >
-                        Source → GitHub
+                        Repository → GitHub
                       </a>
                     )}
                   </div>
@@ -138,7 +138,15 @@ export default function CaseStudy({ project, onClose, onChange }: Props) {
                   <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.18em] text-muted">
                     Screenshot of the deployed build.
                   </p>
+
                 </div>
+              </div>
+
+              <div className="mt-14 flex items-center justify-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-gold">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-gold/60 bg-gold/8">
+                  <span className="animate-bounce -ml-0.5" aria-hidden>↓</span>
+                </span>
+                Scroll to read the project
               </div>
 
               <div className="mt-12 grid gap-10 border-t border-line pt-10 lg:grid-cols-12 lg:gap-12">

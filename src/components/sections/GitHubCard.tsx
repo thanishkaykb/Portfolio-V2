@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { githubContributions as gh } from "../../lib/github-contributions";
+import { useGithubActivity } from "../../lib/github-live";
 import { cn, useIsTouch, useReducedMotion } from "../../lib/hooks";
 
 /**
@@ -9,11 +9,11 @@ import { cn, useIsTouch, useReducedMotion } from "../../lib/hooks";
  * src/lib/github-contributions.ts, which is generated from GitHub's own
  * contribution calendar. Nothing here is estimated.
  *
- * Squares use GitHub's own dark-mode green scale so the card reads instantly as
- * "that green box" while the card chrome stays black and gold.
+ * Squares use a gold scale built from the site's own yellow (#FFC928) instead of
+ * GitHub's greens, so the calendar reads as part of the black and gold card.
  */
 
-const LEVEL_COLORS = ["rgba(245,242,233,0.08)", "#0e4429", "#006d32", "#26a641", "#39d353"];
+const LEVEL_COLORS = ["rgba(245,242,233,0.08)", "#43370a", "#7f660c", "#c69c11", "#ffc928"];
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -31,6 +31,7 @@ function GitHubMark({ className }: { className?: string }) {
 }
 
 export default function GitHubCard() {
+  const { activity: gh, live } = useGithubActivity();
   const wrap = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [flipped, setFlipped] = useState(false);
@@ -134,7 +135,7 @@ export default function GitHubCard() {
                 className="absolute inset-0 opacity-80"
                 style={{
                   background:
-                    "radial-gradient(120% 90% at 12% 0%, rgba(255,201,40,0.15), transparent 55%), radial-gradient(90% 70% at 100% 100%, rgba(57,211,83,0.12), transparent 62%)",
+                    "radial-gradient(120% 90% at 12% 0%, rgba(255,201,40,0.16), transparent 55%), radial-gradient(90% 70% at 100% 100%, rgba(255,201,40,0.1), transparent 62%)",
                 }}
               />
               <div className="grain absolute inset-0 opacity-30" />
@@ -161,8 +162,22 @@ export default function GitHubCard() {
                       </p>
                     </div>
                   </div>
-                  <span className="hidden border border-line px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-bone/70 sm:block">
-                    public only
+                  <span
+                    title={
+                      live
+                        ? "Synced from github.com just now"
+                        : "Reading the saved snapshot of the public GitHub calendar"
+                    }
+                    className="hidden items-center gap-1.5 border border-line px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-bone/70 sm:flex"
+                  >
+                    {live ? (
+                      <>
+                        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold" />
+                        Live · public
+                      </>
+                    ) : (
+                      "public only"
+                    )}
                   </span>
                 </div>
 
@@ -183,7 +198,7 @@ export default function GitHubCard() {
                   </p>
                 </div>
 
-                {/* the green box */}
+                {/* the contribution box, in gold */}
                 <div className="mt-5" style={{ transform: "translateZ(26px)" }}>
                   <div className="relative mb-1.5 hidden h-3 sm:block" aria-hidden>
                     {gh.monthLabels.map((m) => (
@@ -220,7 +235,7 @@ export default function GitHubCard() {
                           className="aspect-square w-full rounded-[1.5px]"
                           style={{
                             backgroundColor: LEVEL_COLORS[level as 0 | 1 | 2 | 3 | 4],
-                            boxShadow: level >= 3 ? "0 0 7px rgba(57,211,83,0.4)" : undefined,
+                            boxShadow: level >= 3 ? "0 0 7px rgba(255,201,40,0.42)" : undefined,
                           }}
                         />
                       )),
@@ -289,7 +304,7 @@ export default function GitHubCard() {
                 className="pointer-events-none absolute inset-0 transition-opacity duration-300"
                 style={{
                   opacity: glare.active ? 0.45 : 0,
-                  background: `radial-gradient(360px circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.26), rgba(57,211,83,0.12) 38%, transparent 62%)`,
+                  background: `radial-gradient(360px circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.26), rgba(255,201,40,0.14) 38%, transparent 62%)`,
                   mixBlendMode: "screen",
                 }}
               />
@@ -309,7 +324,7 @@ export default function GitHubCard() {
               className="absolute inset-0 opacity-80"
               style={{
                 background:
-                  "radial-gradient(110% 80% at 85% 0%, rgba(255,201,40,0.18), transparent 60%), radial-gradient(80% 60% at 0% 100%, rgba(57,211,83,0.12), transparent 60%)",
+                  "radial-gradient(110% 80% at 85% 0%, rgba(255,201,40,0.18), transparent 60%), radial-gradient(80% 60% at 0% 100%, rgba(255,201,40,0.1), transparent 60%)",
               }}
             />
             <div className="relative flex h-full flex-col p-5 md:p-7">
@@ -343,7 +358,7 @@ export default function GitHubCard() {
                           className="h-full"
                           style={{
                             width: `${width}%`,
-                            background: "linear-gradient(90deg, #0e4429, #26a641, #39d353)",
+                            background: "linear-gradient(90deg, #5c4a08, #c69c11, #ffc928)",
                           }}
                         />
                       </div>

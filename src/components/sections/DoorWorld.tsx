@@ -68,14 +68,26 @@ export default function DoorWorld() {
     sheetRef.current?.scrollTo({ top: 0 });
   }, [revealed]);
 
+  // Where the viewer was looking before the sheet opened. After the door
+  // closes, that position is restored so the page never snaps back to the start.
+  const scrollAnchorRef = useRef<HTMLButtonElement | null>(null);
+  const scrollOnce = useCallback(() => {
+    if (!scrollAnchorRef.current) return;
+    const rect = scrollAnchorRef.current.getBoundingClientRect();
+    window.scrollTo({ top: window.scrollY + rect.top, behavior: "auto" });
+  }, []);
   const closeDoor = () => {
     setRevealed(false);
     setMobileOpening(null);
     setMobileGlow(null);
     clearTimers();
     // Let the sheet fade out before the panel swings shut and the camera pulls
-    // back to the corridor.
-    revealTimer.current = window.setTimeout(() => setOpened(null), 420);
+    // back to the corridor, then restore the scroll position to where the viewer
+    // was looking before opening the door.
+    revealTimer.current = window.setTimeout(() => {
+      setOpened(null);
+      scrollOnce();
+    }, 460);
   };
 
   useEffect(() => {
