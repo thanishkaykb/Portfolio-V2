@@ -2,12 +2,20 @@ import { useEffect, useRef } from "react";
 import { useIsTouch, useReducedMotion } from "../../lib/hooks";
 
 /**
- * Custom gold cursor: a small solid dot with a trailing ring that grows over
- * anything interactive. Disabled for touch devices and reduced-motion users.
+ * Custom gold cursor: a small solid dot with a ring that grows over anything
+ * interactive. Disabled for touch devices and reduced-motion users.
+ *
+ * Tracking is 1:1 with the pointer: the position is written straight from the
+ * pointer event, not eased in a frame loop. Easing the ring (the old approach)
+ * costs a frame of lag at 60 Hz and much more when the 3D scenes are busy, which
+ * reads as a cursor that cannot keep up. Only the ring's *size* and opacity are
+ * transitioned, and those live on a child element so the transform on the
+ * parent never animates.
  */
 export default function Cursor() {
   const dot = useRef<HTMLDivElement | null>(null);
   const ring = useRef<HTMLDivElement | null>(null);
+  const ringInner = useRef<HTMLDivElement | null>(null);
   const isTouch = useIsTouch();
   const reduced = useReducedMotion();
 
@@ -15,30 +23,53 @@ export default function Cursor() {
     if (isTouch || reduced) return;
     const dotEl = dot.current;
     const ringEl = ring.current;
-    if (!dotEl || !ringEl) return;
+    const innerEl = ringInner.current;
+    if (!dotEl || !ringEl || !innerEl) return;
 
-    const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    const pos = { ...target };
-    let scale = 1;
-    let targetScale = 1;
-    let frame = 0;
     let visible = false;
+    let grown = false;
+    let lastX = Number.NaN;
+    let lastY = Number.NaN;
 
-    const onMove = (event: PointerEvent) => {
-      target.x = event.clientX;
-      target.y = event.clientY;
-      if (!visible) {
-        visible = true;
-        dotEl.style.opacity = "1";
-        ringEl.style.opacity = "1";
-      }
-      const el = event.target as HTMLElement | null;
-      const interactive = el?.closest(
-        "a, button, [role='button'], input, textarea, select, [data-cursor='grow']",
-      );
-      targetScale = interactive ? 2.35 : 1;
+    const place = (x: number, y: number) => {
+      if (x === lastX && y === lastY) return;
+      lastX = x;
+      lastY = y;
+      // One compositor-friendly translate each, written immediately so the
+      // cursor sits exactly under the pointer on the same frame as the event.
+      dotEl.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+      ringEl.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
     };
 
+    const show = () => {
+      if (visible) return;
+      visible = true;
+      dotEl.style.opacity = "1";
+      ringEl.style.opacity = "1";
+    };
+
+    const setGrown = (next: boolean) => {
+      if (next === grown) return;
+      grown = next;
+      innerEl.style.transform = next ? "scale(2.35)" : "scale(1)";
+      ringEl.style.opacity = "1";
+    };
+
+    const onMove = (event: PointerEvent) => {
+      place(event.clientX, event.clientY);
+      show();
+      const target = event.target as Element | null;
+      setGrown(
+        Boolean(
+          target?.closest(
+            "a, button, [role='button'], input, textarea, select, [data-cursor='grow']",
+          ),
+        ),
+      );
+    };
+
+    // Touch pads and pens report through the same events; a pen moving over the
+    // page gets the same 1:1 tracking as a mouse.
     const onLeave = () => {
       visible = false;
       dotEl.style.opacity = "0";
@@ -46,28 +77,29 @@ export default function Cursor() {
     };
 
     const onDown = () => {
-      targetScale *= 0.82;
+      innerEl.style.transform = grown ? "scale(2)" : "scale(0.82)";
+    };
+    const onUp = () => {
+      innerEl.style.transform = grown ? "scale(2.35)" : "scale(1)";
     };
 
-    const render = () => {
-      pos.x += (target.x - pos.x) * 0.18;
-      pos.y += (target.y - pos.y) * 0.18;
-      scale += (targetScale - scale) * 0.16;
-      dotEl.style.transform = `translate3d(${target.x}px, ${target.y}px, 0) translate(-50%, -50%)`;
-      ringEl.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%) scale(${scale})`;
-      ringEl.style.opacity = visible ? `${Math.max(0.25, 1 - (scale - 1) * 0.5)}` : "0";
-      frame = requestAnimationFrame(render);
-    };
+    // pointerrawupdate fires more often than pointermove where browsers support
+    // it, which keeps fast flicks aligned with the real pointer path.
+    const raw = "onpointerrawupdate" in window;
+    const moveEvent = raw ? "pointerrawupdate" : "pointermove";
 
-    frame = requestAnimationFrame(render);
-    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener(moveEvent, onMove as EventListener, { passive: true });
     window.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("pointerup", onUp, { passive: true });
     document.addEventListener("pointerleave", onLeave);
+    // A pointer that is already on the page when this mounts (for example after
+    // a route change) starts exactly where it is rather than at the centre.
+    place(window.innerWidth / 2, window.innerHeight / 2);
 
     return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener(moveEvent, onMove as EventListener);
       window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointerup", onUp);
       document.removeEventListener("pointerleave", onLeave);
     };
   }, [isTouch, reduced]);
@@ -79,13 +111,19 @@ export default function Cursor() {
       <div
         ref={dot}
         className="fixed left-0 top-0 h-1.5 w-1.5 rounded-full bg-gold opacity-0 mix-blend-difference"
-        style={{ transition: "opacity 300ms" }}
+        style={{ transition: "opacity 160ms linear", willChange: "transform" }}
       />
       <div
         ref={ring}
-        className="fixed left-0 top-0 h-8 w-8 rounded-full border border-gold/60 opacity-0"
-        style={{ transition: "opacity 300ms" }}
-      />
+        className="fixed left-0 top-0 opacity-0"
+        style={{ transition: "opacity 200ms linear", willChange: "transform" }}
+      >
+        <div
+          ref={ringInner}
+          className="h-8 w-8 rounded-full border border-gold/60"
+          style={{ transition: "transform 130ms ease-out", willChange: "transform" }}
+        />
+      </div>
     </div>
   );
 }

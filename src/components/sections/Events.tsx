@@ -8,7 +8,7 @@ import SectionHeading from "../ui/SectionHeading";
  * The Leadership and Events door.
  *
  * Text only: one entry per event, separated by hairlines, with the date, the
- * role, what the event was and what was handled. Nothing is shown twice — the
+ * role, what the event was and what was handled. Nothing is shown twice: the
  * event name appears once, and there is no artwork plate repeating it above the
  * text. The layout is a single column on phones, a stacked block with a wrapping
  * meta row on tablets, and a three/nine split on laptops.
@@ -36,7 +36,7 @@ export function EventsShowcase() {
           <p className="text-sm leading-relaxed text-muted">
             {events.length} events conducted, organised or judged across IEEE TEMS, the IEEE
             Reliability Society and Computer Society chapters, IEEE SIGHT, GUVI's national
-            buildathon and the Hypedin TN community.
+            buildathon, the Hypedin TN community and, as a Google Student Ambassador, GEN-A-THON.
           </p>
           <a
             href={profile.linkedin}

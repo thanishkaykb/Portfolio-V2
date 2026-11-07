@@ -2,7 +2,7 @@
 
 The résumé was supplied to the workspace as text (the original PDF was not
 readable), so this regenerates a clean, on-brand PDF with the same content.
-Replace the output file with the original PDF at any time — the site serves
+Replace the output file with the original PDF at any time · the site serves
 whatever sits at that path.
 
 Run: python3 scripts/generate-resume.py   (needs reportlab)
@@ -114,7 +114,7 @@ def header(canvas, doc):
     # footer
     canvas.setFillColor(HexColor("#8C8880"))
     canvas.setFont("Helvetica", 7)
-    canvas.drawString(MARGIN, 11 * mm, "Thanishka Yogesh — Résumé")
+    canvas.drawString(MARGIN, 11 * mm, "Thanishka Yogesh · Résumé")
     canvas.drawRightString(PAGE_W - MARGIN, 11 * mm, "Page %d" % doc.page)
     canvas.setStrokeColor(LINE)
     canvas.setLineWidth(0.6)
@@ -130,7 +130,7 @@ def build():
         rightMargin=MARGIN,
         topMargin=BAND + 5 * mm,
         bottomMargin=18 * mm,
-        title="Thanishka Yogesh — Résumé",
+        title="Thanishka Yogesh · Résumé",
         author="Thanishka Yogesh",
         subject="Computer Science and Engineering student · full-stack and web developer",
     )
@@ -165,7 +165,7 @@ def build():
 
     section(story, "Education")
     story.append(
-        Paragraph("Bachelor of Engineering — Computer Science and Engineering", role_line_style)
+        Paragraph("Bachelor of Engineering · Computer Science and Engineering", role_line_style)
     )
     story.append(
         Paragraph(
@@ -204,7 +204,7 @@ def build():
 
     project_blocks = [
         {
-            "title": "PAIMANA-AI — Infrastructure Risk Intelligence Platform",
+            "title": "PAIMANA-AI · Infrastructure Risk Intelligence Platform",
             "meta": "2026 · AI-powered project monitoring &amp; risk prediction · paimana-ai-tau.vercel.app",
             "bullets": [
                 "Built a predictive intelligence platform to identify cost, schedule and execution risks across infrastructure projects, enabling proactive intervention.",
@@ -214,7 +214,7 @@ def build():
             "stack": "React · Vite · FastAPI · Python · Scikit-learn · SHAP · Pandas",
         },
         {
-            "title": "Silent Voices Seen — Accessibility &amp; Communication Platform",
+            "title": "Silent Voices Seen · Accessibility &amp; Communication Platform",
             "meta": "2026 · Full-stack web application · Team Lead · silent-voice-seen.vercel.app",
             "bullets": [
                 "Led development and team integration of an accessibility platform supporting speech, text and sign-language communication.",
@@ -224,7 +224,7 @@ def build():
             "stack": "React · Next.js · Node.js · Computer Vision · Speech Recognition · Vercel",
         },
         {
-            "title": "CongestiQ-AI — AI-Powered Urban Traffic Intelligence · 2nd Prize",
+            "title": "CongestiQ-AI · AI-Powered Urban Traffic Intelligence · 2nd Prize",
             "meta": "2026 · 8-hour hackathon · Team Lead · Code Carnival 2K26, SIMATS Engineering · congestiq-ai.vercel.app",
             "bullets": [
                 "Led development of a predictive traffic intelligence system combining traffic, weather, incident and safety data to identify emerging congestion risks.",
@@ -275,7 +275,7 @@ def build():
             "Student Coordinator &amp; Event Organizer",
             "Sri Sairam Engineering College · 2026",
             "Coordinated INTELLECT HACK 2026, Design Sprint, Innovate to Impact, Portfolio Workshop and "
-            "GEN-A-THON — registrations, communication, promotions and execution.",
+            "GEN-A-THON · registrations, communication, promotions and execution.",
         ),
     ]
     for title, meta, body in experience:
@@ -292,29 +292,29 @@ def build():
 
     section(story, "Leadership &amp; Community")
     leadership = [
-        "IEEE TEMS Sairam Chapter — Outreach &amp; Multimedia Lead (Oct 2026 – present)",
-        "IEEE Reliability Society SEC SBC — Volunteer (Oct 2025 – present)",
-        "Unnat Bharat Abhiyan — Advocate (Oct 2026 – present) · Design Team (Jan 2026 – present)",
+        "IEEE TEMS Sairam Chapter · Outreach &amp; Multimedia Lead (Oct 2026 – present)",
+        "IEEE Reliability Society SEC SBC · Volunteer (Oct 2025 – present)",
+        "Unnat Bharat Abhiyan · Advocate (Oct 2026 – present) · Design Team (Jan 2026 – present)",
         "Microsoft Learn Student Ambassador (Apr 2026 – present) · Google Student Ambassador '26",
-        "GeeksforGeeks Campus Mantri (Jun 2026 – present) · Sairam UiAutomistix — Mastermind (Aug 2026 – present)",
-        "IEEE Returning Mothers Conference 2026 — Outreach Committee · IGNITERS — Event Coordinator &amp; Social Media",
+        "GeeksforGeeks Campus Mantri (Jun 2026 – present) · Sairam UiAutomistix · Mastermind (Aug 2026 – present)",
+        "IEEE Returning Mothers Conference 2026 · Outreach Committee · IGNITERS · Event Coordinator &amp; Social Media",
     ]
     story.append(Paragraph("<br/>".join(leadership), body_style))
 
     section(story, "Honors &amp; Certifications")
     story.append(
         Paragraph(
-            "<b>Second Prize</b> — Code Carnival 2K26, SIMATS Engineering &nbsp;·&nbsp; "
-            "<b>1× Hackathon Runner-up</b> &nbsp;·&nbsp; Sparkle'26 Ramp Walk — 2nd Place",
+            "<b>Second Prize</b> · Code Carnival 2K26, SIMATS Engineering &nbsp;·&nbsp; "
+            "<b>1× Hackathon Runner-up</b> &nbsp;·&nbsp; Sparkle'26 Ramp Walk · 2nd Place",
             body_style,
         )
     )
     story.append(Spacer(1, 3))
     certs = [
-        "IBM — 1M1B: Think Beyond",
-        "Cisco — Introduction to Modern AI",
-        "Skillsoft — Python Concurrent Programming",
-        "Forage — Tata GenAI Powered Data Analytics Job Simulation",
+        "IBM · 1M1B: Think Beyond",
+        "Cisco · Introduction to Modern AI",
+        "Skillsoft · Python Concurrent Programming",
+        "Forage · Tata GenAI Powered Data Analytics Job Simulation",
         "TATA Crucible Campus Quiz 2025 · Introduction to Graphic Design · Basics of UI/UX",
     ]
     for cert in certs:
@@ -325,7 +325,7 @@ def build():
 
 
 def draw_band_text(canvas, doc):
-    """Name block inside the band — drawn in header's coordinate space."""
+    """Name block inside the band · drawn in header's coordinate space."""
     canvas.saveState()
     canvas.setFillColor(BONE)
     canvas.setFont("Helvetica-Bold", 25)

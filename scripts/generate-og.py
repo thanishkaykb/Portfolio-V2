@@ -1,4 +1,4 @@
-"""Generates public/og-image.png — a 1200x630 black-and-gold social card.
+"""Generates public/og-image.png - a 1200x630 black-and-gold social card.
 
 Run with: python3 scripts/generate-og.py
 """

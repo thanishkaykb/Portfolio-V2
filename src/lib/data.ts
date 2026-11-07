@@ -106,7 +106,7 @@ export const doors: DoorCategory[] = [
  * India AI Impact Buildathon) and the chapter's public announcements.
  *
  * `post` takes the LinkedIn post that covered the event. Add the URL and a
- * "LinkedIn post" link appears on that card — no code change needed.
+ * "LinkedIn post" link appears on that card, with no code change needed.
  */
 export type EventEntry = {
   slug: string;
@@ -125,15 +125,15 @@ export const events: EventEntry[] = [
   {
     slug: "gen-a-thon",
     name: "GEN-A-THON",
-    role: "Conducted",
+    role: "Conducted · Google Student Ambassador",
     date: "2026",
-    venue: "IEEE Reliability Society SEC SBC · Sri Sairam Engineering College",
-    format: "Generative-AI event · chapter calendar 2026",
+    venue: "Google Student Ambassador programme · Sri Sairam Engineering College",
+    format: "Generative-AI event · Google Student Ambassador",
     summary:
-      "A generative-AI event on the chapter's 2026 calendar, run with the same team that delivered Intellect Hack 2026. The day was built around teams taking a generative-AI idea to something they could show.",
+      "A generative-AI event I conducted as a Google Student Ambassador. The day was built around teams taking a generative-AI idea to something they could show.",
     handled: [
       "Registrations and participant communication",
-      "Promotions and announcements with the chapter's media team",
+      "Promotions and announcements",
       "Execution and on-ground coordination on the day",
     ],
   },
@@ -263,14 +263,14 @@ export const events: EventEntry[] = [
     ],
   },
   {
-    slug: "asendra",
-    name: "Asendra",
+    slug: "ascendra-2026",
+    name: "Ascendra 2026",
     role: "Conducted",
     date: "2026",
     venue: "IEEE TEMS Society · IEEE TEMS SEC SBC · Sri Sairam Engineering College",
     format: "Chapter event · 2026 · IEEE TEMS",
     summary:
-      "Asendra 2026, the event I conducted with the IEEE TEMS Society (IEEE TEMS SEC SBC) team, from the registrations through to the day.",
+      "Ascendra 2026, the event I conducted with the IEEE TEMS Society (IEEE TEMS SEC SBC) team, from the registrations through to the day.",
     handled: [
       "Registrations and participant communication",
       "Promotions and announcements with the chapter's media team",
@@ -309,6 +309,13 @@ export const leadershipRoles: LeadershipRole[] = [
     period: "Oct 2026 onwards",
     body: "Leads outreach and multimedia for the chapter, after joining its volunteer team in March 2026.",
     tags: ["IEEE TEMS", "Outreach", "Multimedia"],
+  },
+  {
+    title: "Campus Ambassador",
+    org: "Google Student Ambassador · Microsoft Learn Student Ambassador · GeeksforGeeks Campus Mantri",
+    period: "2026 onwards",
+    body: "Campus ambassador for three developer programmes at once: Google, Microsoft Learn and GeeksforGeeks, carrying their programmes, workshops and opportunities into campus.",
+    tags: ["Google", "Microsoft Learn", "GeeksforGeeks"],
   },
   {
     title: "Event Coordinator and Social Media Manager",
@@ -972,8 +979,8 @@ export const timeline: TimelineEntry[] = [
   },
   {
     period: "Apr 2026",
-    title: "Microsoft & Google Student Ambassador",
-    org: "Microsoft Learn Student Ambassadors · Google Student Ambassador '26",
+    title: "Student Ambassador",
+    org: "Microsoft Learn Student Ambassador, Google Student Ambassador 2026 · GeeksforGeeks Campus Mantri",
     body: "Selected as an MLSA Associate and a Google Student Ambassador in the same month, joining global student programmes for campus leaders building technical communities. Also a GeeksforGeeks Campus Mantri from June 2026.",
     tags: ["Leadership", "Community", "MLSA"],
   },

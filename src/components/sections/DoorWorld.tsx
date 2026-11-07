@@ -30,6 +30,10 @@ export default function DoorWorld() {
   const [mobileOpening, setMobileOpening] = useState<number | null>(null);
   const [mobileGlow, setMobileGlow] = useState<{ x: number; y: number } | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
+  // Which door the controls are pointing at. Choosing a door here only changes
+  // the selection; the sheet opens on "Open door", a click on the door itself,
+  // or a link that asks for a specific door by id.
+  const [activeIndex, setActiveIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const labelRefs = useRef<Array<HTMLDivElement | null>>([]);
   const openTimer = useRef<number | null>(null);
@@ -39,7 +43,7 @@ export default function DoorWorld() {
   const isTouch = useIsTouch();
   const { ref, visible } = useIsVisible<HTMLDivElement>();
 
-  const focusIndex = opened ?? expanding ?? 0;
+  const focusIndex = opened ?? expanding ?? activeIndex;
   const current = revealed && opened !== null ? doors[opened] : null;
   const relatedProjects = useMemo(
     () =>
@@ -108,6 +112,7 @@ export default function DoorWorld() {
   const openDoorAt = (index: number, scrollFirst = false) => {
     clearTimers();
     setRevealed(false);
+    setActiveIndex(index);
     if (scrollFirst) scrollToSection("skills");
     setExpanding(index);
     openTimer.current = window.setTimeout(() => {
@@ -125,6 +130,7 @@ export default function DoorWorld() {
     if (mobileOpening !== null) return;
     clearTimers();
     setRevealed(false);
+    setActiveIndex(index);
     setMobileOpening(index);
     setMobileGlow(origin);
     openTimer.current = window.setTimeout(() => {
@@ -293,9 +299,10 @@ export default function DoorWorld() {
               if (touchStart === null) return;
               const delta = event.changedTouches[0].clientX - touchStart;
               if (Math.abs(delta) > 42) {
-                const base = opened ?? 0;
-                const next = (base + (delta > 0 ? -1 : 1) + doors.length) % doors.length;
-                requestOpen(next);
+                const next =
+                  (activeIndex + (delta > 0 ? -1 : 1) + doors.length) % doors.length;
+                setActiveIndex(next);
+                setHovered(null);
               }
               setTouchStart(null);
             }}
@@ -334,7 +341,12 @@ export default function DoorWorld() {
                     style={{ visibility: "hidden", willChange: "transform" }}
                     className="absolute left-0 top-0 flex w-[32vw] max-w-[156px] flex-col items-center gap-0.5 text-center sm:gap-1"
                   >
-                    <span className="font-mono text-[8px] tracking-[0.34em] text-gold/80 sm:text-[9px]">
+                    <span
+                      className={cn(
+                        "font-mono text-[8px] tracking-[0.34em] sm:text-[9px]",
+                        focusIndex === index ? "text-gold" : "text-gold/50",
+                      )}
+                    >
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <button
@@ -342,7 +354,10 @@ export default function DoorWorld() {
                       onClick={() => requestOpen(index)}
                       onPointerOver={() => setHovered(index)}
                       onPointerOut={() => setHovered(null)}
-                      className="display pointer-events-auto text-[12px] leading-[1.05] text-bone transition-colors hover:text-gold focus-visible:text-gold sm:text-[15px]"
+                      className={cn(
+                        "display pointer-events-auto text-[12px] leading-[1.05] transition-colors hover:text-gold focus-visible:text-gold sm:text-[15px]",
+                        focusIndex === index ? "text-gold" : "text-bone",
+                      )}
                       aria-label={`Open the ${door.title} door`}
                     >
                       {door.title}
@@ -538,7 +553,7 @@ export default function DoorWorld() {
               {doors.map((door, index) => (
                 <button
                   key={door.id}
-                  onClick={() => requestOpen(index)}
+                  onClick={() => setActiveIndex(index)}
                   onMouseEnter={() => setHovered(index)}
                   onMouseLeave={() => setHovered(null)}
                   aria-pressed={focusIndex === index}
@@ -564,16 +579,20 @@ export default function DoorWorld() {
               </button>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() =>
-                    requestOpen((focusIndex - 1 + doors.length) % doors.length)
-                  }
+                  onClick={() => {
+                    setActiveIndex((focusIndex - 1 + doors.length) % doors.length);
+                    setHovered(null);
+                  }}
                   aria-label="Previous door"
                   className="grid h-9 w-9 place-items-center border border-line text-muted transition-colors hover:border-gold hover:text-gold"
                 >
                   ←
                 </button>
                 <button
-                  onClick={() => requestOpen((focusIndex + 1) % doors.length)}
+                  onClick={() => {
+                    setActiveIndex((focusIndex + 1) % doors.length);
+                    setHovered(null);
+                  }}
                   aria-label="Next door"
                   className="grid h-9 w-9 place-items-center border border-line text-muted transition-colors hover:border-gold hover:text-gold"
                 >

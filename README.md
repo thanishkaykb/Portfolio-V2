@@ -1,4 +1,4 @@
-# Thanishka Yogesh — Immersive 3D Portfolio
+# Thanishka Yogesh - Immersive 3D Portfolio
 
 A black-and-golden-yellow personal portfolio built with React, Vite, TypeScript, Tailwind CSS v4,
 Three.js / React Three Fiber, GSAP ScrollTrigger, Framer Motion and Lenis.
@@ -12,7 +12,7 @@ npm run build      # typecheck + production build
 npm run preview
 ```
 
-Node 20+ recommended. The lockfile (`package-lock.json`) is committed — restore with `npm ci`.
+Node 20+ recommended. The lockfile (`package-lock.json`) is committed - restore with `npm ci`.
 
 ## What is actually interactive
 
@@ -46,24 +46,24 @@ event, and participation is never described as a win.
 
 ## Résumé
 
-`public/resume/Thanishka-Yogesh-Resume.pdf` is live — the nav button now opens and downloads it.
+`public/resume/Thanishka-Yogesh-Resume.pdf` is live - the nav button now opens and downloads it.
 Because the PDF itself could not be read from the workspace (only its extracted text was available),
 it was regenerated as a clean two-page, on-brand document from that content with
 `scripts/generate-resume.py` (needs `reportlab`). If you want your exact original file served,
-replace the PDF at the same path — nothing in the code needs to change.
+replace the PDF at the same path - nothing in the code needs to change.
 
 ## Still needed from you
 
-1. **Photograph** — save it as `public/images/portrait.jpg` (square or portrait crop, 800–1400px).
+1. **Photograph** - save it as `public/images/portrait.jpg` (square or portrait crop, 800–1400px).
    It drops straight into the hero and about apertures with the gold rim treatment. Until then an
    original monogram/light study is shown instead of a stock face.
-2. **Verify the résumé** — the PDF currently served is regenerated from your résumé text. Open it, and
+2. **Verify the résumé** - the PDF currently served is regenerated from your résumé text. Open it, and
    replace it with your original PDF if you prefer the exact file.
-3. **Real screenshots (optional)** — project previews are original code-drawn artwork. Replace any
+3. **Real screenshots (optional)** - project previews are original code-drawn artwork. Replace any
    `<ProjectArtwork />` usage in `src/components/sections/Projects.tsx`, `WebCraft.tsx` or
    `Frames.tsx` with an `<img>` when you have real screenshots, or drop photographs into
    `public/frames/` and add entries in `src/lib/data.ts`.
-4. **Custom domain** — update the canonical/OG URLs in `index.html`, `public/robots.txt` and
+4. **Custom domain** - update the canonical/OG URLs in `index.html`, `public/robots.txt` and
    `public/sitemap.xml`.
 
 ## Contact form
