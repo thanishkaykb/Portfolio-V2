@@ -7,8 +7,8 @@ type Props = { open: boolean; onClose: () => void };
 
 /**
  * The resume lives at /public/resume/Thanishka-Yogesh-Resume.pdf. This panel
- * only offers the two actions: open the PDF in a new tab, or download it. The
- * document itself is never rendered inside the dialog.
+ * offers one action, downloading the PDF; the document is never rendered
+ * inside the dialog.
  */
 export default function ResumeDialog({ open, onClose }: Props) {
   const closeRef = useRef<HTMLButtonElement | null>(null);
@@ -60,7 +60,7 @@ export default function ResumeDialog({ open, onClose }: Props) {
                   {profile.name}
                 </h2>
                 <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted">
-                  One page · PDF · {profile.role}
+                  Single file · One-page PDF · Full-stack and web developer
                 </p>
               </div>
               <button
@@ -72,28 +72,14 @@ export default function ResumeDialog({ open, onClose }: Props) {
               </button>
             </div>
 
-            <p className="mt-5 text-sm leading-relaxed text-muted">
-              Open the document in a new tab to read every page, or download a copy to keep.
-            </p>
-
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={profile.resumePath}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="inline-flex flex-1 items-center justify-center gap-2 bg-gold px-5 py-3.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink transition-transform hover:-translate-y-0.5"
-              >
-                Open PDF <span aria-hidden>↗</span>
-              </a>
-              <a
-                href={profile.resumePath}
-                download="Thanishka-Yogesh-Resume.pdf"
-                type="application/pdf"
-                className="inline-flex flex-1 items-center justify-center gap-2 border border-line px-5 py-3.5 text-[11px] uppercase tracking-[0.16em] text-bone transition-colors hover:border-gold hover:text-gold"
-              >
-                Download PDF <span aria-hidden>↓</span>
-              </a>
-            </div>
+            <a
+              href={profile.resumePath}
+              download="Thanishka-Yogesh-Resume.pdf"
+              type="application/pdf"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 bg-gold px-5 py-3.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink transition-transform hover:-translate-y-0.5"
+            >
+              Download PDF <span aria-hidden>↓</span>
+            </a>
           </motion.div>
         </motion.div>
       )}

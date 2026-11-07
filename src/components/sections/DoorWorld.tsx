@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { doors, profile, projects } from "../../lib/data";
 import { openDoor, subscribeDoorOpen } from "../../lib/doors";
+import { openContactDialog } from "../../lib/contactDialog";
 import {
   cn,
   scrollToSection,
@@ -24,6 +25,9 @@ export default function DoorWorld() {
   const [expanding, setExpanding] = useState<number | null>(null);
   // The sheet only covers the scene once the door has visibly swung open.
   const [revealed, setRevealed] = useState(false);
+  // Phone-only: the card swings open before the sheet zooms in.
+  const [mobileOpening, setMobileOpening] = useState<number | null>(null);
+  const [mobileGlow, setMobileGlow] = useState<{ x: number; y: number } | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const labelRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -66,6 +70,8 @@ export default function DoorWorld() {
 
   const closeDoor = () => {
     setRevealed(false);
+    setMobileOpening(null);
+    setMobileGlow(null);
     clearTimers();
     // Let the sheet fade out before the panel swings shut and the camera pulls
     // back to the corridor.
@@ -100,6 +106,19 @@ export default function DoorWorld() {
 
   const handleOpen = (index: number) => openDoorAt(index);
   const requestOpen = (index: number) => openDoorAt(index);
+
+  /** Phone doors swing on their hinge, then hand over to the zooming sheet. */
+  const openMobileDoor = (index: number, origin: { x: number; y: number }) => {
+    if (mobileOpening !== null) return;
+    clearTimers();
+    setRevealed(false);
+    setMobileOpening(index);
+    setMobileGlow(origin);
+    openTimer.current = window.setTimeout(() => {
+      setOpened(index);
+      revealTimer.current = window.setTimeout(() => setRevealed(true), 320);
+    }, 420);
+  };
 
   /** Nav, hero and inline links ask for a door by id through this event. */
   useEffect(
@@ -137,7 +156,7 @@ export default function DoorWorld() {
       <div className="container-x">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <SectionHeading
-            index="02"
+            index="01"
             label="Career · one door per discipline"
             title={
               <>
@@ -149,11 +168,19 @@ export default function DoorWorld() {
           />
           <div className="max-w-sm">
             <p className="text-sm leading-relaxed text-muted md:text-base">
-              Three doors, three disciplines. Move across the wall, then open the one you want to
-              walk through.
+              <span className="md:hidden">
+                Three doors, three sides of the work. Open the one you want to walk through.
+              </span>
+              <span className="hidden md:inline">
+                Three doors, three sides of the work. Move across the wall, then open the one you
+                want to walk through.
+              </span>
             </p>
             <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.24em] text-gold/80">
-              {isTouch ? "Tap a door to open it" : "Hover to read · click to open"}
+              <span className="md:hidden">Tap a door to open it</span>
+              <span className="hidden md:inline">
+                {isTouch ? "Tap a door to open it" : "Hover to read · click to open"}
+              </span>
             </p>
           </div>
         </div>
@@ -162,8 +189,93 @@ export default function DoorWorld() {
           ref={ref}
           className="relative mt-10 overflow-hidden border border-line bg-[#0a0a09] md:mt-14"
         >
+          {/* On phones the three doors become a straight vertical list. The 3D
+              corridor is a laptop/tablet view only. */}
+          <div className="flex items-center justify-between border-b border-line px-4 py-3 md:hidden">
+            <span className="font-mono text-[9px] uppercase tracking-[0.28em] text-muted">
+              The corridor
+            </span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.28em] text-muted">
+              {String(doors.length).padStart(2, "0")} doors
+            </span>
+          </div>
+
+          <div className="space-y-3 p-3 md:hidden">
+            {doors.map((door, index) => {
+              const opening = mobileOpening === index;
+              return (
+                <div
+                  key={door.id}
+                  className="relative overflow-hidden"
+                  style={{ perspective: "900px" }}
+                >
+                  <button
+                    aria-label={`Open the ${door.title} door`}
+                    onClick={(event) => {
+                      const rect = event.currentTarget.getBoundingClientRect();
+                      openMobileDoor(index, {
+                        x: rect.left + rect.width / 2,
+                        y: rect.top + rect.height / 2,
+                      });
+                    }}
+                    disabled={mobileOpening !== null && !opening}
+                    className="group relative z-10 block h-[clamp(300px,62vh,340px)] w-full overflow-hidden border border-line bg-[#090908] text-left transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] disabled:pointer-events-none"
+                    style={{
+                      transform: opening ? "rotateY(-105deg)" : "rotateY(0deg)",
+                      transformOrigin: "left center",
+                      willChange: "transform",
+                      backfaceVisibility: "hidden",
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0"
+                      style={{
+                        background:
+                          "radial-gradient(90% 70% at 50% 0%, rgba(255,201,40,0.12), transparent 65%)",
+                      }}
+                    />
+                    <span aria-hidden className="absolute inset-3 border border-line/70" />
+                    <span
+                      aria-hidden
+                      className="absolute inset-y-3 left-3 w-px bg-gradient-to-b from-gold/50 via-gold/10 to-transparent"
+                    />
+
+                    <span className="absolute left-5 top-5 font-mono text-[9px] uppercase tracking-[0.3em] text-gold">
+                      {door.index} · Door
+                    </span>
+                    <span className="absolute right-5 top-5 font-mono text-[8px] uppercase tracking-[0.22em] text-muted">
+                      {door.short}
+                    </span>
+
+                    <span className="absolute inset-x-5 top-1/2 block -translate-y-1/2 pr-10">
+                      <span className="display block text-[clamp(1.75rem,7.8vw,2.2rem)] leading-[0.95] text-bone">
+                        {door.title}
+                      </span>
+                      <span className="mt-3 block font-mono text-[8px] uppercase tracking-[0.24em] text-gold/80">
+                        {door.kicker}
+                      </span>
+                    </span>
+
+                    <span
+                      aria-hidden
+                      className="absolute right-6 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-gold/25 bg-gold/[0.04]"
+                    >
+                      <span className="h-2.5 w-2.5 rounded-full bg-gold/80 shadow-[0_0_16px_rgba(255,201,40,0.45)]" />
+                    </span>
+                    <span aria-hidden className="absolute inset-x-5 bottom-0 h-px bg-gold/40" />
+                    <span className="absolute inset-x-5 bottom-4 flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.22em] text-muted">
+                      <span>Open</span>
+                      <span aria-hidden className="text-gold">↗</span>
+                    </span>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
           <div
-            className="relative h-[clamp(340px,56vh,560px)] w-full"
+            className="relative hidden h-[clamp(340px,56vh,560px)] w-full md:block"
             onTouchStart={(event) => setTouchStart(event.changedTouches[0].clientX)}              onTouchEnd={(event) => {
               if (touchStart === null) return;
               const delta = event.changedTouches[0].clientX - touchStart;
@@ -207,9 +319,9 @@ export default function DoorWorld() {
                       labelRefs.current[index] = element;
                     }}
                     style={{ visibility: "hidden", willChange: "transform" }}
-                    className="absolute left-0 top-0 flex w-[38vw] max-w-[168px] flex-col items-center gap-1 text-center"
+                    className="absolute left-0 top-0 flex w-[32vw] max-w-[156px] flex-col items-center gap-0.5 text-center sm:gap-1"
                   >
-                    <span className="font-mono text-[9px] tracking-[0.34em] text-gold/80">
+                    <span className="font-mono text-[8px] tracking-[0.34em] text-gold/80 sm:text-[9px]">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <button
@@ -217,12 +329,12 @@ export default function DoorWorld() {
                       onClick={() => requestOpen(index)}
                       onPointerOver={() => setHovered(index)}
                       onPointerOut={() => setHovered(null)}
-                      className="display pointer-events-auto text-[15px] leading-[1.05] text-bone transition-colors hover:text-gold focus-visible:text-gold"
+                      className="display pointer-events-auto text-[12px] leading-[1.05] text-bone transition-colors hover:text-gold focus-visible:text-gold sm:text-[15px]"
                       aria-label={`Open the ${door.title} door`}
                     >
                       {door.title}
                     </button>
-                    <span className="font-mono text-[8px] uppercase tracking-[0.22em] text-muted">
+                    <span className="font-mono text-[7px] uppercase tracking-[0.22em] text-muted sm:text-[8px]">
                       {door.short}
                     </span>
                   </div>
@@ -263,8 +375,12 @@ export default function DoorWorld() {
                   className="fixed inset-0 z-[65] overflow-y-auto overscroll-contain bg-ink/97 backdrop-blur-xl"
                 >
                   <motion.div
-                    initial={{ y: 26, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
+                    initial={
+                      mobileOpening !== null
+                        ? { opacity: 0, scale: 0.86 }
+                        : { y: 26, opacity: 0 }
+                    }
+                    animate={{ y: 0, opacity: 1, scale: 1 }}
                     exit={{ y: 16, opacity: 0 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
                     className="relative min-h-full"
@@ -290,12 +406,20 @@ export default function DoorWorld() {
                     >
                       {current.title}
                     </h3>
-                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-bone/80 md:text-base">
-                      {current.statement}
-                    </p>
-                    {current.intro && (
+                    {current.id !== "creative-development" && (
+                      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-bone/80 md:text-base">
+                        {current.statement}
+                      </p>
+                    )}
+                    {current.id !== "creative-development" && current.intro && (
                       <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted md:text-[15px] md:leading-relaxed">
                         {current.intro}
+                      </p>
+                    )}
+
+                    {current.empty && (
+                      <p className="mt-8 border-t border-line pt-6 font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+                        This door is still being written.
                       </p>
                     )}
 
@@ -309,12 +433,12 @@ export default function DoorWorld() {
                     )}
 
                     {current.id === "creative-development" && (
-                      <div className="mt-10 border-t border-line pt-10 md:mt-14 md:pt-14">
+                      <div className="mt-6 md:mt-8">
                         <PoetryShowcase />
                       </div>
                     )}
 
-                    {current.id !== "creative-development" && (
+                    {current.id !== "creative-development" && !current.empty && (
                     <div className="mt-10 grid gap-6 lg:grid-cols-12">
                       <p className="text-sm leading-relaxed text-muted lg:col-span-5">
                         {current.details}
@@ -333,7 +457,7 @@ export default function DoorWorld() {
                     </div>
                     )}
 
-                    {current.id !== "creative-development" && relatedProjects.length > 0 && (
+                    {current.id !== "creative-development" && !current.empty && relatedProjects.length > 0 && (
                       <div className="mt-7 border-t border-line pt-4">
                         <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted">
                           Built with this discipline
@@ -353,7 +477,7 @@ export default function DoorWorld() {
                     )}
 
                     {/* closing box, end of the door */}
-                    {current.id !== "creative-development" && (
+                    {current.id !== "creative-development" && !current.empty && (
                     <div className="mt-12 flex flex-col gap-7 border border-gold/35 bg-gold/[0.06] p-6 sm:flex-row sm:items-end sm:justify-between md:p-8">
                       <div>
                         <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-gold">
@@ -369,10 +493,7 @@ export default function DoorWorld() {
                       </div>
                       <div className="flex flex-wrap items-center gap-3">
                         <button
-                          onClick={() => {
-                            closeDoor();
-                            window.setTimeout(() => scrollToSection("contact"), 520);
-                          }}
+                          onClick={openContactDialog}
                           className="inline-flex items-center gap-2 bg-gold px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink transition-transform hover:-translate-y-0.5"
                         >
                           Work with me
@@ -398,7 +519,7 @@ export default function DoorWorld() {
           </div>
 
           {/* controls under the canvas (always reachable / keyboard accessible) */}
-          <div className="relative z-10 flex flex-col gap-4 border-t border-line bg-ink/90 p-3 md:flex-row md:items-center md:justify-between md:px-4">
+          <div className="relative z-10 hidden flex-col gap-4 border-t border-line bg-ink/90 p-3 md:flex md:flex-row md:items-center md:justify-between md:px-4">
             <div className="no-scrollbar -mx-1 flex items-center gap-2 overflow-x-auto px-1">
               {doors.map((door, index) => (
                 <button
@@ -452,6 +573,45 @@ export default function DoorWorld() {
           </span>
         </div>
       </div>
+
+      {/* phone-only light burst: a small point grows into the doorway light */}
+      {createPortal(
+        mobileGlow ? (
+          <div
+            aria-hidden
+            className="pointer-events-none fixed inset-0 z-[64] overflow-hidden"
+          >
+            <motion.span
+              data-mobile-glow
+              className="absolute rounded-full"
+              style={{
+                left: mobileGlow.x,
+                top: mobileGlow.y,
+                width: 240,
+                height: 240,
+                background:
+                  "radial-gradient(circle, rgba(255,201,40,0.95) 0%, rgba(255,201,40,0.5) 32%, rgba(255,201,40,0.12) 55%, transparent 72%)",
+                filter: "blur(10px)",
+              }}
+              initial={{ x: "-50%", y: "-50%", scale: 0.12, opacity: 0 }}
+              animate={{
+                x: "-50%",
+                y: "-50%",
+                scale: [0.12, 0.28, 1.05, 8],
+                opacity: [0, 0.95, 0.92, 0],
+              }}
+              transition={{
+                scale: { duration: 0.95, times: [0, 0.16, 0.48, 1], ease: "linear" },
+                opacity: { duration: 0.95, times: [0, 0.12, 0.75, 1], ease: "linear" },
+                x: { duration: 0.95 },
+                y: { duration: 0.95 },
+              }}
+              onAnimationComplete={() => setMobileGlow(null)}
+            />
+          </div>
+        ) : null,
+        document.body,
+      )}
     </section>
   );
 }

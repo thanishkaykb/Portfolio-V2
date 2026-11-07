@@ -43,22 +43,6 @@ export default function Story() {
         });
       });
 
-      gsap.fromTo(
-        ".story-progress-fill",
-        { scaleY: 0 },
-        {
-          scaleY: 1,
-          ease: "none",
-          transformOrigin: "top",
-          scrollTrigger: {
-            trigger: ".story-list",
-            start: "top 70%",
-            end: "bottom 72%",
-            scrub: 0.6,
-          },
-        },
-      );
-
       gsap.to(".story-digits", {
         yPercent: -50,
         ease: "none",
@@ -69,6 +53,7 @@ export default function Story() {
           scrub: 1.2,
         },
       });
+
     }, root);
 
     return () => ctx.revert();
@@ -120,6 +105,12 @@ export default function Story() {
                   <p className="mt-4 text-sm leading-snug text-bone/90">{current.title}</p>
                   <p className="mt-1 text-xs text-muted">{current.org}</p>
                 </div>
+                <div className="relative mt-5 h-px w-full bg-line">
+                  <span
+                    className="absolute inset-y-0 left-0 bg-gold transition-[width] duration-500"
+                    style={{ width: `${((index + 1) / timeline.length) * 100}%` }}
+                  />
+                </div>
 
                 <div className="relative mt-6 flex h-24 gap-2 overflow-hidden" aria-hidden>
                   {[0, 1, 2, 3, 4].map((column) => (
@@ -136,15 +127,8 @@ export default function Story() {
                   ))}
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-2 via-transparent to-ink-2" />
                 </div>
-              </div>
 
-              <div className="mt-6 flex items-center gap-3">
-                <div className="relative h-24 w-px bg-line">
-                  <div className="story-progress-fill absolute inset-x-0 top-0 h-full origin-top bg-gold" />
-                </div>
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted">
-                  Scroll through the timeline
-                </p>
+
               </div>
             </div>
           </div>

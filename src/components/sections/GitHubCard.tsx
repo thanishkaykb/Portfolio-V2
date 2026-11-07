@@ -39,7 +39,7 @@ export default function GitHubCard() {
   const reduced = useReducedMotion();
 
   const onMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (reduced) return;
+    if (reduced || isTouch) return;
     const node = wrap.current;
     if (!node) return;
     const rect = node.getBoundingClientRect();
@@ -52,6 +52,31 @@ export default function GitHubCard() {
   const reset = () => {
     setTilt({ x: 0, y: 0 });
     setGlare((value) => ({ ...value, active: false }));
+  };
+
+  // A horizontal drag flips the card on touch screens, where there is no
+  // hover tilt. A tap still flips it as before.
+  const dragStart = useRef<{ x: number; y: number } | null>(null);
+  const dragged = useRef(false);
+
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    dragStart.current = { x: event.clientX, y: event.clientY };
+    dragged.current = false;
+  };
+
+  const onPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    const start = dragStart.current;
+    dragStart.current = null;
+    if (!start) return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy)) {
+      dragged.current = true;
+      setFlipped((value) => !value);
+      window.setTimeout(() => {
+        dragged.current = false;
+      }, 320);
+    }
   };
 
   const onKeyDown = (event: React.KeyboardEvent) => {
@@ -78,11 +103,20 @@ export default function GitHubCard() {
           role="button"
           tabIndex={0}
           aria-label={`GitHub activity card for ${gh.handle}. ${gh.total} contributions in the last year. Press Enter to flip.`}
-          onClick={() => setFlipped((value) => !value)}
+          onClick={() => {
+            if (dragged.current) return;
+            setFlipped((value) => !value);
+          }}
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={() => {
+            dragStart.current = null;
+          }}
           onKeyDown={onKeyDown}
           className="relative aspect-[0.95] w-full cursor-pointer select-none focus-visible:outline-none sm:aspect-[1.06] lg:aspect-[1.18]"
           style={{
             transformStyle: "preserve-3d",
+            touchAction: "pan-y",
             transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y + (flipped ? 180 : 0)}deg)`,
             transition: flipped
               ? "transform 900ms cubic-bezier(0.16,1,0.3,1)"
@@ -320,7 +354,11 @@ export default function GitHubCard() {
 
               <dl className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4 sm:grid-cols-3">
                 {[
-                  { term: "Contributions", detail: gh.total.toLocaleString("en-US") },
+                  { term: "Last 12 months", detail: gh.total.toLocaleString("en-US") },
+                  {
+                    term: "All-time",
+                    detail: `${gh.total.toLocaleString("en-US")} since Nov 2025`,
+                  },
                   { term: "Active days", detail: `${gh.activeDays}` },
                   { term: "Longest streak", detail: `${gh.longestStreak} days` },
                   { term: "Current streak", detail: `${gh.currentStreak} days` },
@@ -382,9 +420,10 @@ export default function GitHubCard() {
       </div>
 
       <p className={cn("mt-4 max-w-sm text-center text-xs leading-relaxed text-muted")}>
-        Squares, streaks and totals are read from my public GitHub calendar ,{" "}
-        {gh.total.toLocaleString("en-US")} contributions between {prettyDate(gh.rangeStart)} and{" "}
-        {prettyDate(gh.rangeEnd)}.
+        Squares, streaks and totals are read from my public GitHub calendar:{" "}
+        {gh.total.toLocaleString("en-US")} contributions in the last twelve months, and{" "}
+        {gh.total.toLocaleString("en-US")} all-time since my first commit in November 2025, the full
+        history of this account.
       </p>
     </div>
   );

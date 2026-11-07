@@ -17,9 +17,9 @@ export default function Recognition() {
               </>
             }
           />
-          <p className="max-w-xs text-sm leading-relaxed text-muted">
-            Prizes, records and certifications, each naming the event or the body it came from.
-            Participation is never presented as a win.
+          <p className="max-w-xs border-l border-gold/50 pl-4 text-sm italic leading-relaxed text-bone/80">
+            “Every step forward, even the quiet ones, is a step toward a better future. Keep
+            going.”
           </p>
         </div>
 

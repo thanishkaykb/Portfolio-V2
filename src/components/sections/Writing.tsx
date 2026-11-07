@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import {
   anthologies,
-  anthologyCovers,
   artAccount,
   drivePoems,
   poems,
-  poemsFolder,
   poetryProfile,
   pressClippings,
-  pressFolder,
 } from "../../lib/data";
 import SectionHeading from "../ui/SectionHeading";
 import { cn } from "../../lib/hooks";
@@ -194,22 +191,6 @@ export function PoetryShowcase() {
 
       <div className="mt-4 flex flex-wrap gap-2">
         <a
-          href={anthologyCovers}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="border border-line px-3 py-1.5 text-[11px] text-bone transition-colors hover:border-gold hover:text-gold"
-        >
-          All cover pages ↗
-        </a>
-        <a
-          href={poemsFolder}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="border border-line px-3 py-1.5 text-[11px] text-bone transition-colors hover:border-gold hover:text-gold"
-        >
-          All 42 poems ↗
-        </a>
-        <a
           href={poetryProfile}
           target="_blank"
           rel="noreferrer noopener"
@@ -225,14 +206,9 @@ export function PoetryShowcase() {
           <h3 className="display text-2xl text-bone">
             In the newspaper<span className="text-gold">.</span>
           </h3>
-          <a
-            href={pressFolder}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted transition-colors hover:text-gold"
-          >
-            The Times of India · open the folder ↗
-          </a>
+          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted">
+            Six pages · local archive
+          </p>
         </div>
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
           The Times of India printed my poems in its school pages six times, under Dare to Dream and
@@ -344,13 +320,11 @@ export function PoetryShowcase() {
 
       {/* art gateway, the account itself is the gallery */}
       <div className="mt-10 border border-line bg-ink-2 p-6 md:p-7">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-gold">Art</p>
-            <p className="mt-2 display text-[clamp(1.5rem,3.6vw,2rem)] leading-none text-bone">
-              Drawings and colour.
-            </p>
-          </div>
+        <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-gold">Art</p>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+          <p className="display text-[clamp(1.5rem,3.6vw,2rem)] leading-none text-bone">
+            Drawings and colour.
+          </p>
           <a
             href={artAccount.href}
             target="_blank"
@@ -361,7 +335,7 @@ export function PoetryShowcase() {
           </a>
         </div>
 
-        <div className="mt-5 grid gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+        <div className="mt-5">
           <p className="max-w-md text-sm leading-relaxed text-muted">
             Sketches, paintings and colour studies go up as{" "}
             <span className="text-bone">{artAccount.handle}</span>.
@@ -372,7 +346,7 @@ export function PoetryShowcase() {
             target="_blank"
             rel="noreferrer noopener"
             aria-label={`Open ${artAccount.handle} on Instagram`}
-            className="group block w-full max-w-[360px] justify-self-start transition-transform duration-300 hover:-translate-y-0.5 sm:w-[360px] sm:justify-self-end"
+            className="group mx-auto mt-6 block w-full max-w-[420px] transition-transform duration-300 hover:-translate-y-0.5"
           >
             <span className="block bg-bone p-1.5 shadow-[0_18px_44px_rgba(0,0,0,0.45)]">
               <img

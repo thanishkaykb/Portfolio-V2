@@ -9,7 +9,7 @@ export default function AbilitySection() {
         <div className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-14">
           <div className="lg:col-span-6">
             <SectionHeading
-              index="03"
+              index="02"
               label="GitHub activity"
               title={
                 <>

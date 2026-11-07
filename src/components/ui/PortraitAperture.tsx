@@ -12,13 +12,13 @@ type Props = {
 /**
  * Golden portrait aperture.
  *
- * Uses /images/portrait.jpg when present. The frame is a tall arch rather than
+ * Uses /images/portrait-about.webp when present. The frame is a tall arch rather than
  * a circle so a head-and-shoulders portrait keeps the face in frame, and the
  * image is graded warm with a gold rim so it sits inside the black page
  * instead of looking like a pasted cut-out. Until the file exists, an original
  * monogram light-study is shown, never a stock face.
  */
-const SOURCES = ["/images/portrait.jpg", "/images/portrait.jpeg"];
+const SOURCES = ["/images/portrait-about.webp"];
 
 export default function PortraitAperture({
   variant = "hero",

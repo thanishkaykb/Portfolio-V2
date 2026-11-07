@@ -126,7 +126,7 @@ export default function Nav({ onResume }: { onResume: () => void }) {
 
               <button
                 onClick={onResume}
-                className="hidden items-center gap-1.5 border border-line px-3.5 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-bone transition-colors duration-300 hover:border-gold hover:text-gold sm:inline-flex"
+                className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap border border-gold bg-gold px-2.5 py-2 font-mono text-[9px] uppercase tracking-[0.18em] text-ink transition-colors duration-300 hover:bg-gold/85 sm:px-3.5 sm:text-[10px]"
               >
                 Resume <span aria-hidden>↗</span>
               </button>

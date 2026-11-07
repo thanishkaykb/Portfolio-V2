@@ -22,6 +22,7 @@ export const profile = {
   college: "Sri Sairam Engineering College",
   education: "Aug 2025 to Aug 2029 (expected)",
   cgpa: "8.60",
+  internships: 5,
   year: "Second year",
   location: "Chennai, Tamil Nadu, India",
   email: "thanishka.ykb@gmail.com",
@@ -48,6 +49,8 @@ export type DoorCategory = {
   details: string;
   skills: { name: string; note: string }[];
   projectSlugs: string[];
+  /** Intentionally blank until its content is written. */
+  empty?: boolean;
 };
 
 export const doors: DoorCategory[] = [
@@ -73,27 +76,8 @@ export const doors: DoorCategory[] = [
     projectSlugs: ["paimana-ai", "intellect-hack-2026", "one-nation-one-portal"],
   },
   {
-    id: "ui-ux-design",
-    index: "02",
-    title: "UI/UX Design",
-    short: "UI / UX",
-    kicker: "Clarity before decoration",
-    statement: "Interface systems with a point of view, hierarchy, motion and restraint.",
-    details:
-      "I design in Figma and then build in the browser. Component systems, type scales and motion that explains rather than decorates. I design for the states people actually hit: empty, loading, error, and the first thirty seconds.",
-    skills: [
-      { name: "Figma", note: "Wireframes, layout and interface design" },
-      { name: "Design systems", note: "Tokens, primitives, reusable components" },
-      { name: "shadcn/ui + Radix", note: "Accessible component foundations" },
-      { name: "Framer Motion", note: "Interface transitions and gestures" },
-      { name: "Data visualisation", note: "Recharts and dashboard layouts" },
-      { name: "Accessibility", note: "Focus order, contrast, reduced motion" },
-    ],
-    projectSlugs: ["civic-lens", "nourish-ai", "scanforge"],
-  },
-  {
     id: "creative-development",
-    index: "03",
+    index: "02",
     title: "Creative Development",
     short: "Creative",
     kicker: "Experiments with a browser",
@@ -111,6 +95,18 @@ export const doors: DoorCategory[] = [
       { name: "Motion design", note: "Easing, choreography, reveals" },
     ],
     projectSlugs: ["air-draw", "motion-mesh", "colouris"],
+  },
+  {
+    id: "leadership-events",
+    index: "03",
+    title: "Leadership and Events",
+    short: "Leadership",
+    kicker: "Rooms I help run",
+    statement: "Leadership, events and the communities I help build.",
+    details: "",
+    skills: [],
+    projectSlugs: [],
+    empty: true,
   },
 ];
 
@@ -142,9 +138,6 @@ export const anthologies: Anthology[] = [
     note: "On feeling everything too much, breaking quietly, and still being here.",
   },
 ];
-
-export const anthologyCovers =
-  "https://drive.google.com/drive/folders/1Ocvea1K7kmYn5Ax5y2NLnlCu9eLfRqxp";
 
 export type Poem = {
   title: string;
@@ -706,11 +699,11 @@ export const timeline: TimelineEntry[] = [
     tags: ["Education"],
   },
   {
-    period: "Oct 2025",
-    title: "Into the communities",
-    org: "IEEE Reliability Society · SEC SBC · Unnat Bharat Abhiyan",
-    body: "Began volunteering with the IEEE Reliability Society SEC SBC and Unnat Bharat Abhiyan, event support, outreach, and learning how technical communities actually run. Later joined the UBA design team and the outreach committee for the IEEE Returning Mothers Conference 2026.",
-    tags: ["Volunteering", "IEEE", "Design"],
+    period: "Oct 2025 onwards",
+    title: "IEEE Reliability Society & IEEE TEMS",
+    org: "IEEE Reliability Society · SEC SBC · IEEE TEMS Sairam Chapter",
+    body: "A volunteer with the IEEE Reliability Society SEC SBC since October 2025, supporting events and outreach. Since October 2026 I have served as Outreach and Multimedia Lead for the IEEE TEMS Sairam Chapter, after joining its volunteer team in March 2026.",
+    tags: ["IEEE", "Volunteering", "Outreach"],
   },
   {
     period: "Dec 2025 to Jan 2026",
@@ -723,7 +716,7 @@ export const timeline: TimelineEntry[] = [
   },
   {
     period: "Dec 2025 to Jan 2026",
-    title: "Artificial Intelligence / App Development Intern",
+    title: "Artificial Intelligence and App Development Intern",
     org: "CodeAlpha",
     body: "Enhanced AI algorithms using machine-learning techniques and contributed to open-source AI projects alongside app development work.",
     tags: ["Internship", "Python", "ML"],
@@ -770,16 +763,15 @@ export const timeline: TimelineEntry[] = [
     linkLabel: "Event website",
   },
   {
-    period: "Oct 2026 onwards",
-    title: "Outreach & Multimedia Lead",
-    org: "IEEE TEMS Sairam Chapter · UBA Advocate",
-    body: "Leading outreach and multimedia for IEEE TEMS Sairam Chapter, a volunteer there since March 2026, while serving as an Advocate for Unnat Bharat Abhiyan. Still building websites, still shipping in the open.",
-    tags: ["Leadership", "Outreach", "Now"],
+    period: "2026 onwards",
+    title: "UBA & UiAutomistix Club",
+    org: "Unnat Bharat Abhiyan · UiAutomistix Club",
+    body: "A MAGIC member at Unnat Bharat Abhiyan, and an Advocate and Mastermind at the UiAutomistix Club, helping shape the rooms where students learn, build and show their work.",
+    tags: ["Community", "MAGIC", "Leadership"],
   },
 ];
 
-export const yogaCertificate =
-  "https://drive.google.com/file/d/18gacTAfsOGJpNfNEjoKPZjnWl7C4NUZ-/view";
+export const yogaCertificate = "/assets/images/yoga-certificate.jpg";
 
 export const honors: { title: string; detail: string; link?: string; linkLabel?: string }[] = [
   {
@@ -794,7 +786,7 @@ export const honors: { title: string; detail: string; link?: string; linkLabel?:
     linkLabel: "Certificate",
   },
   {
-    title: "Women's Day '26, 2nd Place",
+    title: "Women's Day'26, 2nd Place",
     detail: "Ramp walk, Sri Sairam Engineering College",
   },
   {
@@ -812,36 +804,30 @@ export const certifications = [
   { name: "Introduction to Graphic Design · Basics of UI/UX", issuer: "Certifications" },
 ];
 
-export const poemsFolder =
-  "https://drive.google.com/drive/folders/1luAr03_8UHVdH9wozt3A1jsd_tXIkvzu";
-
-export const pressFolder =
-  "https://drive.google.com/drive/folders/1oVipxIzPvH1dKYkZM-DLs0Dcz6SlT_Ho";
-
 export type PressClipping = { src: string; title: string; meta: string; href: string };
 
 /** Times of India school pages that printed the poems. */
 export const pressClippings: PressClipping[] = [
   { src: "/writing/press/press-1.jpg",
-    href: "https://drive.google.com/file/d/1IJNvC_9ZtLwgnNof0TE0ZC96g6tWvozq/view", title: "Moon", meta: "Dare to Dream · 17 March 2025" },
+    href: "/writing/press/press-1.jpg", title: "Moon", meta: "Dare to Dream · 17 March 2025" },
   { src: "/writing/press/press-2.jpg",
-    href: "https://drive.google.com/file/d/1JzlhXFf_QUa0L5i3hJaFvkAuMv4QMYy1/view", title: "Footprints", meta: "Express Y · The Times of India" },
+    href: "/writing/press/press-2.jpg", title: "Footprints", meta: "Express Y · The Times of India" },
   {
     src: "/writing/press/press-3.jpg",
-    href: "https://drive.google.com/file/d/1uCYKnWX9MSjwNMc8SHO-IJyaCWzUcbxd/view",
+    href: "/writing/press/press-3.jpg",
     title: "The Final Bell Rings",
     meta: "Canvas & Verses · 20 February 2025",
   },
   { src: "/writing/press/press-4.jpg",
-    href: "https://drive.google.com/file/d/1v7qNx--a9H0qk3DzKp0D8vbsaN05zz8J/view", title: "Colours!", meta: "Express Y · The Times of India" },
+    href: "/writing/press/press-4.jpg", title: "Colours!", meta: "Express Y · The Times of India" },
   {
     src: "/writing/press/press-5.jpg",
-    href: "https://drive.google.com/file/d/1vPQxAlJ7HKETy3sSI9DpZvVU3nSz5xaD/view",
+    href: "/writing/press/press-5.jpg",
     title: "Palette of Potential",
     meta: "Express Y · The Times of India",
   },
   { src: "/writing/press/press-6.jpg",
-    href: "https://drive.google.com/file/d/1zg3kFI7khpxygKGIpo2Pd-_Qx8e17lKY/view", title: "Colours!", meta: "Express Y · 22 January 2025" },
+    href: "/writing/press/press-6.jpg", title: "Colours!", meta: "Express Y · 22 January 2025" },
 ];
 
 export type DrivePoem = { n: number; title: string; href: string };

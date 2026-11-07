@@ -3,7 +3,7 @@
  * itself lives inside DoorWorld. A small event keeps those callers from having
  * to thread state through the whole page.
  */
-export type DoorId = "website-development" | "ui-ux-design" | "creative-development";
+export type DoorId = "website-development" | "creative-development" | "leadership-events";
 
 const DOOR_OPEN_EVENT = "portfolio:door-open";
 

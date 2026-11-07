@@ -12,6 +12,7 @@ import DoorWorld from "./components/sections/DoorWorld";
 import Hero from "./components/sections/Hero";
 import Story from "./components/sections/Story";
 import BackToTop from "./components/ui/BackToTop";
+import ContactDialog from "./components/ui/ContactDialog";
 import Marquee from "./components/ui/Marquee";
 import ResumeDialog, { useResumeDialog } from "./components/ui/ResumeDialog";
 import { useSmoothScroll } from "./lib/useSmoothScroll";
@@ -50,6 +51,7 @@ export default function App() {
       <Footer />
       <BackToTop />
       <ResumeDialog open={resume.open} onClose={resume.closeDialog} />
+      <ContactDialog />
       <div className="noise-overlay" aria-hidden />
     </div>
   );

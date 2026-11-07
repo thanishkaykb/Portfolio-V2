@@ -1,4 +1,5 @@
 import { profile } from "../../lib/data";
+import { openContactDialog } from "../../lib/contactDialog";
 import { scrollToSection } from "../../lib/hooks";
 
 function GitHubMark() {
@@ -38,7 +39,6 @@ function MailMark() {
 const elsewhere = [
   { label: "GitHub", href: profile.github, icon: <GitHubMark /> },
   { label: "LinkedIn", href: profile.linkedin, icon: <LinkedInMark /> },
-  { label: "Email", href: `mailto:${profile.email}`, icon: <MailMark /> },
 ];
 
 export default function Contact() {
@@ -84,12 +84,19 @@ export default function Contact() {
             </a>
           ))}
           <button
+            onClick={openContactDialog}
+            className="inline-flex items-center gap-2.5 border border-line px-4 py-3.5 text-[11px] uppercase tracking-[0.18em] text-bone transition-colors hover:border-gold hover:text-gold"
+          >
+            <MailMark />
+            Email
+          </button>
+          <button
             onClick={() => scrollToSection("skills")}
             className="group inline-flex items-center gap-2.5 bg-gold px-5 py-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink transition-transform duration-300 hover:-translate-y-0.5"
           >
             See my work
-            <span aria-hidden className="transition-transform duration-300 group-hover:translate-y-0.5">
-              ↓
+            <span aria-hidden className="transition-transform duration-300 group-hover:-translate-y-0.5">
+              ↑
             </span>
           </button>
         </div>

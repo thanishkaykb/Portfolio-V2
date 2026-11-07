@@ -7,7 +7,7 @@ import { scrollToSection, useReducedMotion } from "../../lib/hooks";
 const paragraphs = [
   "I'm Thanishka Yogesh, a second-year Computer Science and Engineering student at Sri Sairam Engineering College in Chennai, building websites and the systems behind them.",
   "Most of what I know came from shipping: an accessibility platform that translates between speech and sign language, an RTI portal with authenticated dashboards, a QR studio with cloud storage, a risk-intelligence dashboard with explainable predictions. Each project started with a question I couldn't answer yet.",
-  "Alongside coursework I've interned in full-stack development at Prodigy InfoTech, front-end design at Oasis Infobyte and AI development at CodeAlpha, and I lead outreach and multimedia for the IEEE TEMS Sairam Chapter while volunteering with the IEEE Reliability Society and Unnat Bharat Abhiyan.",
+  "Alongside coursework I've completed five internships, including full-stack development at Prodigy InfoTech, front-end design at Oasis Infobyte and artificial intelligence and app development at CodeAlpha. I lead outreach and multimedia for the IEEE TEMS Sairam Chapter, volunteer with the IEEE Reliability Society, and am a MAGIC member at Unnat Bharat Abhiyan and an Advocate and Mastermind at the UiAutomistix Club.",
   "I care about the parts people feel rather than notice: type that holds up at 360px, states for loading and error, keyboard access, motion that explains instead of performing. Away from code I'm an artist and a poet, and I'm currently looking for internships where I can work on real products with people who care about the details.",
 ];
 
@@ -44,6 +44,23 @@ export default function About() {
                 </div>
               </div>
 
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                <div className="border border-line p-4">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted">CGPA</p>
+                  <p className="mt-2 display text-2xl leading-none text-gold">{profile.cgpa}</p>
+                  <p className="mt-1 text-xs text-muted">Current average</p>
+                </div>
+                <div className="border border-line p-4">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted">
+                    Internships
+                  </p>
+                  <p className="mt-2 display text-2xl leading-none text-gold">
+                    {profile.internships}
+                  </p>
+                  <p className="mt-1 text-xs text-muted">Completed</p>
+                </div>
+              </div>
+
               <div className="mt-4 flex flex-wrap gap-2">
                 {interests.map((interest) => (
                   <span
@@ -63,7 +80,7 @@ export default function About() {
 
           <div className="lg:col-span-7">
             <SectionHeading
-              index="01"
+              index="03"
               label="About"
               title={
                 <>
