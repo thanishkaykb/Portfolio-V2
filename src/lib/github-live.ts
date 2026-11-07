@@ -4,10 +4,15 @@ import { githubContributions } from "./github-contributions";
 /**
  * Live GitHub activity.
  *
- * The Worker at /api/github reads the public contribution calendar (and the
- * public repositories) straight from GitHub and caches the result for fifteen
- * minutes. The generated snapshot in github-contributions.ts is the fallback,
- * so the card still renders if the endpoint is unreachable.
+ * The generated snapshot in github-contributions.ts is always present, so the
+ * card renders with real numbers on any static host (Vercel has no serverless
+ * route here, and requesting a missing /api/github only logs a 404).
+ *
+ * A deployment that DOES serve a JSON feed (for example the Cloudflare Worker
+ * in sites/worker.js, which reads the public contribution calendar from GitHub
+ * and caches it for fifteen minutes) opts in by setting VITE_GITHUB_ENDPOINT at
+ * build time. Without it, no request is made and the snapshot is used, which is
+ * the correct behaviour for a static Vercel deployment.
  */
 
 export type GithubRepo = {
@@ -39,11 +44,15 @@ export type GithubActivityData = {
 
 const fallback = githubContributions as unknown as GithubActivityData;
 
+/** Optional JSON feed; unset on a static host such as Vercel. */
+const ENDPOINT: string = (import.meta.env.VITE_GITHUB_ENDPOINT as string | undefined)?.trim() ?? "";
+
 let pending: Promise<GithubActivityData | null> | null = null;
 
 function loadActivity() {
+  if (!ENDPOINT) return Promise.resolve(null);
   if (!pending) {
-    pending = fetch("/api/github", { headers: { accept: "application/json" } })
+    pending = fetch(ENDPOINT, { headers: { accept: "application/json" } })
       .then((response) => (response.ok ? response.json() : null))
       .then((data: GithubActivityData | null) => {
         if (!data || !Array.isArray(data.weeks) || data.weeks.length === 0) return null;

@@ -80,13 +80,6 @@ export default function GitHubCard() {
     }
   };
 
-  const onKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      setFlipped((value) => !value);
-    }
-  };
-
   const totalWeeks = gh.weeks.length;
   const bestMonth = gh.topMonths[0];
   const perActiveDay = (gh.total / Math.max(1, gh.activeDays)).toFixed(1);
@@ -101,9 +94,8 @@ export default function GitHubCard() {
         onPointerLeave={reset}
       >
         <div
-          role="button"
-          tabIndex={0}
-          aria-label={`GitHub activity card for ${gh.handle}. ${gh.total} contributions in the last year. Press Enter to flip.`}
+          role="group"
+          aria-label={`GitHub activity card for ${gh.handle}. ${gh.total} contributions in the last year.`}
           onClick={() => {
             if (dragged.current) return;
             setFlipped((value) => !value);
@@ -113,8 +105,7 @@ export default function GitHubCard() {
           onPointerCancel={() => {
             dragStart.current = null;
           }}
-          onKeyDown={onKeyDown}
-          className="relative aspect-[0.95] w-full cursor-pointer select-none focus-visible:outline-none sm:aspect-[1.06] lg:aspect-[1.18]"
+          className="relative aspect-[0.95] w-full cursor-pointer select-none sm:aspect-[1.06] lg:aspect-[1.18]"
           style={{
             transformStyle: "preserve-3d",
             touchAction: "pan-y",

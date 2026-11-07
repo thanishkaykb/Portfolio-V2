@@ -96,7 +96,247 @@ export const doors: DoorCategory[] = [
     details: "",
     skills: [],
     projectSlugs: [],
-    empty: true,
+  },
+];
+
+/**
+ * The events conducted, organised or judged, in the order they happened.
+ * Names, roles and the course of each event come from Thanishka's own account
+ * of them, the official event pages (Intellect Hack 2026, ReliAI Vision, the
+ * India AI Impact Buildathon) and the chapter's public announcements.
+ *
+ * `post` takes the LinkedIn post that covered the event. Add the URL and a
+ * "LinkedIn post" link appears on that card — no code change needed.
+ */
+export type EventEntry = {
+  slug: string;
+  name: string;
+  role: string;
+  date: string;
+  venue: string;
+  format: string;
+  summary: string;
+  handled: string[];
+  post?: string;
+  links?: { label: string; href: string }[];
+};
+
+export const events: EventEntry[] = [
+  {
+    slug: "gen-a-thon",
+    name: "GEN-A-THON",
+    role: "Conducted",
+    date: "2026",
+    venue: "IEEE Reliability Society SEC SBC · Sri Sairam Engineering College",
+    format: "Generative-AI event · chapter calendar 2026",
+    summary:
+      "A generative-AI event on the chapter's 2026 calendar, run with the same team that delivered Intellect Hack 2026. The day was built around teams taking a generative-AI idea to something they could show.",
+    handled: [
+      "Registrations and participant communication",
+      "Promotions and announcements with the chapter's media team",
+      "Execution and on-ground coordination on the day",
+    ],
+  },
+  {
+    slug: "ai-creation-lab",
+    name: "AI Creation Lab",
+    role: "Conducted",
+    date: "2026",
+    venue: "Hypedin TN community",
+    format: "Poster design challenge",
+    summary:
+      "A poster design challenge organised by the Hypedin TN community, which I conducted. Participants take a design brief, build a poster around it and send it in for judging.",
+    handled: [
+      "Ran the challenge and briefed the participants",
+      "Kept entries moving through the submission window",
+      "Coordinated with the Hypedin TN team through to the results",
+    ],
+  },
+  {
+    slug: "india-ai-impact-buildathon",
+    name: "India AI Impact Buildathon 2026",
+    role: "Campus Ambassador · Organising team",
+    date: "2026",
+    venue: "GUVI, in association with HCL",
+    format: "National AI buildathon",
+    summary:
+      "The national AI buildathon run by GUVI with HCL. I was campus ambassador for the programme and part of the organising side, carrying the buildathon into campus and keeping the students taking part moving through it.",
+    handled: [
+      "Campus ambassador for the India AI Impact Buildathon 2026",
+      "Helped organise the campus side of the buildathon",
+      "Coordinated students through registrations and the rounds",
+    ],
+  },
+  {
+    slug: "design-sprint",
+    name: "Design Sprint",
+    role: "Conducted",
+    date: "2026",
+    venue: "IEEE Reliability Society SEC SBC · Sri Sairam Engineering College",
+    format: "Design sprint",
+    summary:
+      "A design sprint on the chapter's 2026 calendar: one brief, work done at speed, a set of outcomes to show at the end. I conducted it with the chapter team.",
+    handled: [
+      "Registrations and participant communication",
+      "Promotions and announcements with the chapter's media team",
+      "Execution and on-ground coordination on the day",
+    ],
+  },
+  {
+    slug: "innovate-to-impact",
+    name: "Innovate to Impact: The Power of STEM in Shaping the Future",
+    role: "Conducted",
+    date: "2026",
+    venue: "IEEE Computer Society · Sri Sairam Engineering College",
+    format: "STEM event · IEEE Computer Society",
+    summary:
+      "An event built around its own title: the power of STEM in shaping the future. I conducted it with the chapter team, from the brief and the invitations through to the day itself.",
+    handled: [
+      "Registrations and participant communication",
+      "Promotions and announcements with the chapter's media team",
+      "Execution and on-ground coordination on the day",
+    ],
+  },
+  {
+    slug: "intellect-hack-2026",
+    name: "Intellect Hack 2026",
+    role: "Student Coordinator",
+    date: "23 September 2026",
+    venue: "Apple Hall, Sri Sairam Engineering College, Chennai",
+    format: "IEEE Reliability Society SEC SBC · inter-college AI hackathon · 6 hours · teams of 2–4",
+    summary:
+      "The chapter's flagship AI hackathon. An online round opened on 23 August 2026 with the problem statements and the PPT template; shortlisted teams reported to Apple Hall on 23 September, were handed a new problem statement on the spot, and had the day to ideate, pitch and build a working prototype.",
+    handled: [
+      "Registrations, participant communication, promotional posts and execution on the day",
+      "Published the problem statements, two-phase timeline, eligibility, fees, venue details and FAQ content",
+      "Designed and built the official event website, and kept it current through both rounds",
+      "Worked with the staff coordinator, the co-coordinators, the jury and the volunteer team",
+    ],
+    links: [
+      { label: "Event website", href: "https://intellect-hack-2026.vercel.app/" },
+      { label: "Source on GitHub", href: "https://github.com/thanishkaykb/Intellect-Hack-2026" },
+    ],
+  },
+  {
+    slug: "building-portfolio-workshop",
+    name: "Building Portfolio Workshop",
+    role: "Conducted",
+    date: "2026",
+    venue: "Four by Series",
+    format: "Portfolio workshop",
+    summary:
+      "A workshop on building a portfolio, run by Four by Series. I conducted the session for the chapter: the registrations, the room and the run of the workshop itself.",
+    handled: [
+      "Registrations and participant communication",
+      "Promotions and announcements",
+      "Execution and on-ground coordination on the day",
+    ],
+  },
+  {
+    slug: "ieee-sight-panel",
+    name: "Engineering Solution that Speaks for Society",
+    role: "Panel support",
+    date: "2026",
+    venue: "IEEE SIGHT · Sri Sairam Engineering College",
+    format: "Panel discussion",
+    summary:
+      "A panel discussion run by IEEE SIGHT on engineering solutions that speak for society: how a technical idea becomes something a community can actually use. I helped run the session with the SIGHT team, from the arrangements through to the discussion itself.",
+    handled: [
+      "Helped organise the panel and its run of show",
+      "Coordinated with the speakers and the IEEE SIGHT team",
+      "Supported the session on the day",
+    ],
+  },
+  {
+    slug: "reliai-vision",
+    name: "ReliAI Vision",
+    role: "Conducted",
+    date: "11 October 2026",
+    venue: "IEEE Reliability Society SEC SBC · online",
+    format: "AI-powered poster design challenge · IEEE Day 2026",
+    summary:
+      "ReliAI Vision, the online AI-powered poster design challenge the chapter ran for IEEE Day 2026: one hour, individual participation, free entry, posters designed with AI tools. I conducted it with the team.",
+    handled: [
+      "Ran the challenge and briefed the participants",
+      "Kept entries moving through the one-hour window",
+      "Coordinated with the chapter on the results and the announcements",
+    ],
+  },
+  {
+    slug: "asendra",
+    name: "Asendra",
+    role: "Conducted",
+    date: "2026",
+    venue: "IEEE TEMS Society · IEEE TEMS SEC SBC · Sri Sairam Engineering College",
+    format: "Chapter event · 2026 · IEEE TEMS",
+    summary:
+      "Asendra 2026, the event I conducted with the IEEE TEMS Society (IEEE TEMS SEC SBC) team, from the registrations through to the day.",
+    handled: [
+      "Registrations and participant communication",
+      "Promotions and announcements with the chapter's media team",
+      "Execution and on-ground coordination on the day",
+    ],
+  },
+  {
+    slug: "quizaria-2",
+    name: "Quizaria 2.0",
+    role: "Panelist",
+    date: "2026",
+    venue: "Quizaria 2.0",
+    format: "Quiz competition · judging panel",
+    summary:
+      "A quiz competition where I sat on the panel, judging the rounds and giving the teams feedback at the close.",
+    handled: [
+      "Judged the rounds as part of the panel",
+      "Gave the teams feedback at the close",
+    ],
+  },
+];
+
+/** Leadership positions held alongside the events. */
+export type LeadershipRole = {
+  title: string;
+  org: string;
+  period: string;
+  body: string;
+  tags: string[];
+};
+
+export const leadershipRoles: LeadershipRole[] = [
+  {
+    title: "Outreach and Multimedia Lead",
+    org: "IEEE TEMS Sairam Chapter",
+    period: "Oct 2026 onwards",
+    body: "Leads outreach and multimedia for the chapter, after joining its volunteer team in March 2026.",
+    tags: ["IEEE TEMS", "Outreach", "Multimedia"],
+  },
+  {
+    title: "Event Coordinator and Social Media Manager",
+    org: "IGNITERS",
+    period: "Jan 2026 onwards",
+    body: "Runs event coordination and the social media presence for the community.",
+    tags: ["Events", "Social media"],
+  },
+  {
+    title: "Volunteer · Design team",
+    org: "IEEE Reliability Society SEC SBC · SEC IEEE CS Chapter",
+    period: "Oct 2025 onwards",
+    body: "Designs posters for events and celebrations and builds certificate templates for the chapter, alongside event support and outreach.",
+    tags: ["IEEE", "Design", "Volunteering"],
+  },
+  {
+    title: "Mastermind (MAGIC member)",
+    org: "UiAutomisticx Club, Sri Sairam Engineering College",
+    period: "2026 onwards",
+    body: "MAGIC member and Mastermind of the club, driving its initiatives and technical activity.",
+    tags: ["Community", "UiAutomisticx"],
+  },
+  {
+    title: "MAGIC member · Advocate for Sirukalathur",
+    org: "Unnat Bharat Abhiyan, Sri Sairam Engineering College",
+    period: "2026 onwards",
+    body: "Advocate for Sirukalathur, one of the villages adopted by the institution, connecting the community with opportunities and initiatives.",
+    tags: ["UBA", "Community"],
   },
 ];
 

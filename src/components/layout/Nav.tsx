@@ -207,15 +207,6 @@ export default function Nav({ onResume }: { onResume: () => void }) {
               </nav>
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    onResume();
-                  }}
-                  className="inline-flex items-center gap-2 bg-gold px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-ink"
-                >
-                  Resume ↗
-                </button>
                 <a
                   href={`mailto:${profile.email}`}
                   className="border border-line px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-bone"

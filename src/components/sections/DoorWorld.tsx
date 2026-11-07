@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { doors, profile, projects } from "../../lib/data";
@@ -17,6 +17,7 @@ import SectionHeading from "../ui/SectionHeading";
 import { ProjectsShowcase } from "./Projects";
 import { WebWorkShowcase } from "./WebCraft";
 import { PoetryShowcase } from "./Writing";
+import { EventsShowcase } from "./Events";
 
 const DoorScene = lazy(() => import("../three/DoorScene"));
 
@@ -418,17 +419,6 @@ export default function DoorWorld() {
                     >
                       {current.title}
                     </h3>
-                    {current.id !== "creative-development" && (
-                      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-bone/80 md:text-base">
-                        {current.statement}
-                      </p>
-                    )}
-                    {current.id !== "creative-development" && current.intro && (
-                      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted md:text-[15px] md:leading-relaxed">
-                        {current.intro}
-                      </p>
-                    )}
-
                     {current.empty && (
                       <p className="mt-8 border-t border-line pt-6 font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
                         This door is still being written.
@@ -450,7 +440,16 @@ export default function DoorWorld() {
                       </div>
                     )}
 
-                    {current.id !== "creative-development" && !current.empty && (
+                    {current.id === "leadership-events" && (
+                      <div className="mt-6 md:mt-8">
+                        <EventsShowcase />
+                      </div>
+                    )}
+
+                    {current.id !== "creative-development" &&
+                      current.id !== "leadership-events" &&
+                      !current.empty &&
+                      Boolean(current.details) && (
                     <div className="mt-10 grid gap-6 lg:grid-cols-12">
                       <p className="text-sm leading-relaxed text-muted lg:col-span-5">
                         {current.details}
@@ -488,8 +487,11 @@ export default function DoorWorld() {
                       </div>
                     )}
 
-                    {/* closing box, end of the door */}
-                    {current.id !== "creative-development" && !current.empty && (
+                    {/* closing box, end of the door. The events door ends on its
+                        own connect box, so the sales pitch is left out there. */}
+                    {current.id !== "creative-development" &&
+                      current.id !== "leadership-events" &&
+                      !current.empty && (
                     <div className="mt-12 flex flex-col gap-7 border border-gold/35 bg-gold/[0.06] p-6 sm:flex-row sm:items-end sm:justify-between md:p-8">
                       <div>
                         <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-gold">

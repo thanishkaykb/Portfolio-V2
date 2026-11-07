@@ -2,8 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ErrorBoundary from "../layout/ErrorBoundary";
 import HeroPortrait from "../ui/HeroPortrait";
-import { profile, resumePath } from "../../lib/data";
-import { resumePath } from "../../lib/data";
+import { profile } from "../../lib/data";
 import { openDoor } from "../../lib/doors";
 import {
   scrollToSection,
@@ -177,16 +176,6 @@ export default function Hero({ entered }: { entered: boolean }) {
                 GitHub
                 <span aria-hidden className="text-[10px] text-gold/70 transition-transform group-hover:-translate-y-0.5">
                   ↗
-                </span>
-              </a>
-              <a
-                href={resumePath}
-                download="Thanishka-Yogesh-Resume.pdf"
-                className="group inline-flex items-center gap-2 px-1 py-3.5 text-[11px] uppercase tracking-[0.18em] text-muted transition-colors hover:text-gold"
-              >
-                Resume
-                <span aria-hidden className="text-[10px] text-gold/70 transition-transform group-hover:-translate-y-0.5">
-                  ↘
                 </span>
               </a>
             </motion.div>
