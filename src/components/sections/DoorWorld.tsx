@@ -76,11 +76,13 @@ export default function DoorWorld() {
   // Where the viewer was looking before the sheet opened. After the door
   // closes, that position is restored so the page never snaps back to the start.
   const scrollAnchorRef = useRef<HTMLButtonElement | null>(null);
+  const savedScrollY = useRef<number>(0);
   const scrollOnce = useCallback(() => {
     if (!scrollAnchorRef.current) return;
     const rect = scrollAnchorRef.current.getBoundingClientRect();
     window.scrollTo({ top: window.scrollY + rect.top, behavior: "auto" });
   }, []);
+  void scrollOnce;
   const closeDoor = () => {
     setRevealed(false);
     setMobileOpening(null);
@@ -91,7 +93,18 @@ export default function DoorWorld() {
     // was looking before opening the door.
     revealTimer.current = window.setTimeout(() => {
       setOpened(null);
-      scrollOnce();
+      // Restore to the exact pre-open scroll position. Using auto avoids any
+      // smooth-scroll animation that would fight the body lock un-locking.
+      window.scrollTo({ top: savedScrollY.current, behavior: "auto" });
+      // If an anchor button had been recorded, try to snap to it as a fallback
+      // for anchor-driven opens (links, nav, hero).
+      if (scrollAnchorRef.current) {
+        const rect = scrollAnchorRef.current.getBoundingClientRect();
+        window.scrollTo({
+          top: window.scrollY + rect.top,
+          behavior: "auto",
+        });
+      }
     }, 460);
   };
 
@@ -114,6 +127,9 @@ export default function DoorWorld() {
     setRevealed(false);
     setActiveIndex(index);
     if (scrollFirst) scrollToSection("skills");
+    // Remember where the viewer was before the sheet opens. This is the position
+    // we restore on close, even if the sheet itself scrolls internally.
+    savedScrollY.current = window.scrollY;
     setExpanding(index);
     openTimer.current = window.setTimeout(() => {
       setExpanding(null);
@@ -131,6 +147,8 @@ export default function DoorWorld() {
     clearTimers();
     setRevealed(false);
     setActiveIndex(index);
+    // Record the pre-open scroll position for mobile door opens too.
+    savedScrollY.current = window.scrollY;
     setMobileOpening(index);
     setMobileGlow(origin);
     openTimer.current = window.setTimeout(() => {
