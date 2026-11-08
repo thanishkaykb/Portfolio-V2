@@ -156,18 +156,20 @@ export default function GitHubCard() {
                   <span
                     title={
                       live
-                        ? "Synced from github.com just now"
-                        : "Reading the saved snapshot of the public GitHub calendar"
+                        ? `Synced from github.com · read ${new Date().toLocaleTimeString()}`
+                        : "Using the saved public snapshot"
                     }
-                    className="hidden items-center gap-1.5 border border-line px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-bone/70 sm:flex"
+                    className="items-center gap-1.5 border border-line px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-bone/70"
                   >
                     {live ? (
                       <>
-                        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold" />
-                        Live · public
+                        <span aria-hidden className="relative h-1.5 w-1.5 rounded-full bg-gold">
+                          <span className="absolute inset-0 animate-pulse rounded-full bg-gold" />
+                        </span>
+                        Live
                       </>
                     ) : (
-                      "public only"
+                      "snapshot"
                     )}
                   </span>
                 </div>

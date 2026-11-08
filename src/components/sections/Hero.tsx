@@ -114,7 +114,7 @@ export default function Hero({ entered }: { entered: boolean }) {
                 </motion.h1>
               </div>
 
-              {/* a small portrait sits beside the name on phones and tablets */}
+              {/* compact portrait beside the name, only on phones */}
               <motion.div
                 {...anim(0.22)}
                 className="w-[25vw] max-w-[104px] shrink-0 sm:max-w-[136px] lg:hidden"
@@ -188,8 +188,19 @@ export default function Hero({ entered }: { entered: boolean }) {
               <span className="hidden h-3 w-px bg-line sm:block" aria-hidden />
               <span>{profile.college}</span>
             </motion.div>
+
+            {/* full reveal portrait, below the copy on small screens */}
+            <motion.div
+              {...anim(0.66)}
+              className="mt-8 flex justify-center sm:hidden"
+            >
+              <div className="relative w-full max-w-[240px]">
+                <HeroPortrait />
+              </div>
+            </motion.div>
           </div>
 
+          {/* portrait on the right on laptop and up — same reveal effect, every layout */}
           <motion.div {...anim(0.3)} className="hidden lg:col-span-5 lg:block">
             <div className="relative mx-auto w-full max-w-[310px]">
               <HeroPortrait />

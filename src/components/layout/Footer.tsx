@@ -14,7 +14,7 @@ export default function Footer() {
   const time = useChennaiTime();
 
   return (
-    <footer className="relative overflow-hidden border-t border-line bg-ink-2">
+    <footer id="footer" className="relative overflow-hidden border-t border-line bg-ink-2">
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[70rem] -translate-x-1/2 rounded-full opacity-30 blur-3xl"
@@ -99,7 +99,7 @@ export default function Footer() {
             </span>
             <button
               onClick={scrollToTop}
-              className="group inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted transition-colors hover:text-gold"
+              className="group inline-flex items-center gap-2 border border-gold font-mono text-[10px] uppercase tracking-[0.18em] text-ink transition-colors hover:bg-gold hover:text-ink"
             >
               Back to top
               <span
