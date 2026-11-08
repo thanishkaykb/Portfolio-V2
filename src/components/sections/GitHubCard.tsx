@@ -237,7 +237,7 @@ export default function GitHubCard() {
 
                   <div className="mt-2.5 flex items-center justify-between">
                     <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone/60">
-                      {gh.activeDays} active days of 365
+                      {gh.activeDays} active days across the last twelve months
                     </span>
                     <span className="flex items-center gap-1.5">
                       <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-bone/45">
