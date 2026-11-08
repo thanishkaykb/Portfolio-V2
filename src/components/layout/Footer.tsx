@@ -99,15 +99,15 @@ export default function Footer() {
             </span>
             <button
               onClick={scrollToTop}
-              className="group inline-flex items-center gap-2 border border-gold font-mono text-[10px] uppercase tracking-[0.18em] text-ink transition-colors hover:bg-gold hover:text-ink"
+              className="group relative inline-flex items-center gap-2 rounded-md bg-gold px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink shadow-[0_10px_24px_-6px_rgba(0,0,0,0.45)] transition-shadow hover:shadow-[0_14px_30px_-6px_rgba(0,0,0,0.55)] active:scale-[0.98]"
             >
-              Back to top
               <span
                 aria-hidden
                 className="transition-transform duration-300 group-hover:-translate-y-0.5"
               >
                 ↑
               </span>
+              Back to top
             </button>
           </div>
         </div>

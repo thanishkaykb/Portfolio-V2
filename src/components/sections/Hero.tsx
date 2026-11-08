@@ -188,16 +188,6 @@ export default function Hero({ entered }: { entered: boolean }) {
               <span className="hidden h-3 w-px bg-line sm:block" aria-hidden />
               <span>{profile.college}</span>
             </motion.div>
-
-            {/* full reveal portrait, below the copy on small screens */}
-            <motion.div
-              {...anim(0.66)}
-              className="mt-8 flex justify-center sm:hidden"
-            >
-              <div className="relative w-full max-w-[240px]">
-                <HeroPortrait />
-              </div>
-            </motion.div>
           </div>
 
           {/* portrait on the right on laptop and up — same reveal effect, every layout */}
