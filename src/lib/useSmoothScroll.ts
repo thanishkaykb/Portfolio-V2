@@ -23,12 +23,10 @@ export function useSmoothScroll() {
     // target on every frame, so long scrolls and touch flicks stay silky
     // instead of stopping on a fixed clock.
     const lenis = new Lenis({
-      lerp: 0.1,
+      lerp: 0.085,
       smoothWheel: true,
-      wheelMultiplier: 1.05,
-      touchMultiplier: 1.7,
-      syncTouch: true,
-      syncTouchLerp: 0.1,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.5,
       autoRaf: false,
       anchors: false,
     });

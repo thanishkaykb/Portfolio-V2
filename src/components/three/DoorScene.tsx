@@ -392,7 +392,8 @@ export default function DoorScene({
   return (
     <Canvas
       frameloop={paused ? "never" : "always"}
-      dpr={[1, 1.7]}
+      dpr={[1, 1.5]}
+      performance={{ min: 0.6 }}
       shadows={false}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0.25, 7.0], fov: 46, near: 0.1, far: 80 }}

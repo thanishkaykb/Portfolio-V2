@@ -976,6 +976,8 @@ export const timeline: TimelineEntry[] = [
     org: "Convex · Supabase · FastAPI",
     body: "Built CivicLens, ScanForge, TimeCapsule and Silent Voices Seen, authenticated products with schemas, storage, document export and real-time interaction. The interface had to agree with the data layer.",
     tags: ["Full-Stack", "Product", "React"],
+    link: "https://github.com/thanishkaykb",
+    linkLabel: "GitHub",
   },
   {
     period: "Apr 2026",
@@ -1004,7 +1006,7 @@ export const timeline: TimelineEntry[] = [
     period: "2026 onwards",
     title: "MAGIC member at Unnat Bharat Abhiyan",
     org: "Unnat Bharat Abhiyan, Sri Sairam Engineering College",
-    body: "As a MAGIC Member of Unnat Bharat Abhiyan at Sri Sairam Engineering College and the Advocate for Sirukalathur, one of the villages associated with our institution, I aspire to be a voice for the community and a catalyst for meaningful change. I believe in understanding grassroots challenges, connecting people with opportunities, and turning ideas into initiatives that create real impact. Through active community engagement, collaboration, and innovative thinking, I hope to contribute to the village's sustainable development, empower its people, and help build a stronger, more inclusive future. For me, this role is more than a responsibility; it is an opportunity to give back to society and be part of a change that truly matters.",
+    body: "As a MAGIC Member of Unnat Bharat Abhiyan (UBA), I serve as the Advocate for Sirukalathur, supporting community engagement and village development initiatives. I work towards understanding local needs and encouraging initiatives that contribute to sustainable community development.",
     tags: ["Community", "MAGIC", "UBA"],
   },
   {

@@ -105,7 +105,7 @@ export default function GitHubCard() {
           onPointerCancel={() => {
             dragStart.current = null;
           }}
-          className="relative aspect-[0.95] w-full cursor-pointer select-none sm:aspect-[1.06] lg:aspect-[1.18]"
+          className="relative w-full min-h-[380px] cursor-pointer select-none sm:min-h-0"
           style={{
             transformStyle: "preserve-3d",
             touchAction: "pan-y",
@@ -117,11 +117,11 @@ export default function GitHubCard() {
         >
           {/* ───────────── front, the contribution graph ───────────── */}
           <div
-            className="absolute inset-0 overflow-hidden"
+            className="relative overflow-hidden"
             style={{ backfaceVisibility: "hidden", transform: "translateZ(0.1px)" }}
           >
             <div className="absolute inset-0 gold-foil" />
-            <div className="absolute inset-[1.5px] bg-ink-2">
+            <div className="relative m-[1.5px] bg-ink-2">
               <div
                 className="absolute inset-0 opacity-80"
                 style={{
@@ -132,7 +132,7 @@ export default function GitHubCard() {
               <div className="grain absolute inset-0 opacity-30" />
 
               <div
-                className="relative flex h-full flex-col justify-between p-5 md:p-7"
+                className="relative flex flex-col p-5 md:p-7"
                 style={{ transformStyle: "preserve-3d" }}
               >
                 {/* header */}
@@ -235,8 +235,8 @@ export default function GitHubCard() {
                     )}
                   </div>
 
-                  <div className="mt-2.5 flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone/60">
+                  <div className="mt-2.5 flex flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:justify-between">
+                    <span className="font-mono text-[10px] uppercase leading-snug tracking-[0.16em] text-bone/60">
                       {gh.activeDays} active days across the last twelve months
                     </span>
                     <span className="flex items-center gap-1.5">
@@ -280,13 +280,13 @@ export default function GitHubCard() {
 
                 {/* footer */}
                 <div
-                  className="mt-3 flex items-center justify-between"
+                  className="mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1"
                   style={{ transform: "translateZ(14px)" }}
                 >
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone/70">
+                  <span className="font-mono text-[10px] uppercase leading-snug tracking-[0.16em] text-bone/70">
                     Busiest day · {gh.bestDay.count} on {prettyDate(gh.bestDay.date)}
                   </span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-gold/80">
+                  <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.16em] text-gold/80">
                     Flip ↻
                   </span>
                 </div>
@@ -320,7 +320,7 @@ export default function GitHubCard() {
                   "radial-gradient(110% 80% at 85% 0%, rgba(255,201,40,0.18), transparent 60%), radial-gradient(80% 60% at 0% 100%, rgba(255,201,40,0.1), transparent 60%)",
               }}
             />
-            <div className="relative flex h-full flex-col p-5 md:p-7">
+            <div className="relative flex h-full flex-col p-4 sm:p-5 md:p-7">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-gold">
@@ -333,7 +333,7 @@ export default function GitHubCard() {
                 <GitHubMark className="h-6 w-6 shrink-0 text-gold/70" />
               </div>
 
-              <div className="mt-5 grid flex-1 content-start gap-x-6 gap-y-3 sm:grid-cols-2">
+              <div className="mt-4 grid flex-1 content-start grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-6 sm:gap-y-3">
                 {gh.topMonths.map((month) => {
                   const width = Math.max(8, Math.round((month.count / bestMonth.count) * 100));
                   return (
@@ -360,7 +360,7 @@ export default function GitHubCard() {
                 })}
               </div>
 
-              <dl className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4 sm:grid-cols-3">
+              <dl className="mt-3 grid grid-cols-2 gap-x-5 gap-y-2 border-t border-line pt-3 sm:grid-cols-3">
                 {[
                   { term: "Last 12 months", detail: gh.total.toLocaleString("en-US") },
                   {
@@ -382,7 +382,7 @@ export default function GitHubCard() {
                 ))}
               </dl>
 
-              <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-line pt-2.5">
                 <a
                   href={gh.profile}
                   target="_blank"

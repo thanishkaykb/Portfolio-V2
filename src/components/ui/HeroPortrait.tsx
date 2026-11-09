@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { cn, useIsTouch, useReducedMotion } from "../../lib/hooks";
+import { cn, useReducedMotion } from "../../lib/hooks";
 
 type Props = {
   compact?: boolean;
@@ -16,9 +16,9 @@ const PORTRAIT = "/images/portrait-hero.webp";
  * with the portrait so the window stays a small circle on a phone and on a
  * laptop, and is capped so it can never become a full-image reveal.
  */
-const RADIUS_RATIO = 0.36;
-const RADIUS_MIN = 32;
-const RADIUS_MAX = 90;
+const RADIUS_RATIO = 0.38;
+const RADIUS_MIN = 34;
+const RADIUS_MAX = 110;
 
 /** The mask: solid at the centre, feathered out to nothing at the radius. */
 const REVEAL_MASK = `radial-gradient(circle var(--reveal-r, 72px) at var(--reveal-x, 50%) var(--reveal-y, 50%), rgba(0,0,0,1) 0%, rgba(0,0,0,1) 35%, rgba(0,0,0,0.85) 55%, rgba(0,0,0,0.4) 75%, transparent 100%)`;
@@ -36,25 +36,25 @@ const REVEAL_MASK = `radial-gradient(circle var(--reveal-r, 72px) at var(--revea
  * placed at the pointer, so only the area immediately around the cursor shows
  * the original colours. One window, no trail: moving the pointer moves the
  * window and every previous position returns to grey, and the window fades in
- * on entry and out on exit. Touch screens and reduced-motion visitors simply
- * get the full-colour portrait.
+ * on entry and out on exit. Mouse, finger and pen all drive the same window: a
+ * finger reveals colour only while it is held down, and lifting it returns the
+ * portrait to grey. Reduced-motion visitors get the full-colour portrait.
  */
 export default function HeroPortrait({ className }: Props) {
   const reduced = useReducedMotion();
-  const isTouch = useIsTouch();
-  const reveal = !reduced && !isTouch;
   const hostRef = useRef<HTMLDivElement | null>(null);
   const colorRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    if (!reveal) return;
     const host = hostRef.current;
     const color = colorRef.current;
     if (!host || !color) return;
 
     let frame = 0;
     let next: { x: number; y: number } | null = null;
-    let inside = false;
+    // The finger or pen currently held down. A mouse needs no button, so it is
+    // handled separately and reveals for as long as the pointer is inside.
+    let heldId: number | null = null;
 
     /** Move the colour window to the latest pointer position. */
     const apply = () => {
@@ -64,27 +64,67 @@ export default function HeroPortrait({ className }: Props) {
       color.style.setProperty("--reveal-y", `${next.y}px`);
     };
 
-    const onPointerMove = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse") return;
+    /**
+     * Place the window from a viewport position, measured against the
+     * portrait's own box so the mask stays aligned at every size, and clamped
+     * inside it so a finger sliding off the edge never parks the window
+     * somewhere the photograph is not.
+     */
+    const move = (clientX: number, clientY: number) => {
       const rect = host.getBoundingClientRect();
-      next = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-      if (!inside) {
-        inside = true;
-        color.style.setProperty("--reveal-x", `${next.x}px`);
-        color.style.setProperty("--reveal-y", `${next.y}px`);
+      if (!rect.width || !rect.height) return;
+      const x = Math.min(rect.width, Math.max(0, clientX - rect.left));
+      const y = Math.min(rect.height, Math.max(0, clientY - rect.top));
+      next = { x, y };
+      if (color.style.opacity !== "1") {
+        color.style.setProperty("--reveal-x", `${x}px`);
+        color.style.setProperty("--reveal-y", `${y}px`);
         color.style.opacity = "1";
       }
       if (!frame) frame = requestAnimationFrame(apply);
     };
 
-    const onPointerLeave = () => {
-      inside = false;
+    /** Back to full greyscale: no window, no leftover coloured area. */
+    const hide = () => {
+      heldId = null;
       next = null;
       if (frame) {
         cancelAnimationFrame(frame);
         frame = 0;
       }
       color.style.opacity = "0";
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") {
+        move(event.clientX, event.clientY);
+        return;
+      }
+      if (heldId !== null && event.pointerId === heldId) {
+        move(event.clientX, event.clientY);
+      }
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") {
+        move(event.clientX, event.clientY);
+        return;
+      }
+      heldId = event.pointerId;
+      move(event.clientX, event.clientY);
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") return;
+      if (heldId !== null && event.pointerId === heldId) hide();
+    };
+
+    const onPointerLeave = (event: PointerEvent) => {
+      if (event.pointerType === "mouse" || event.pointerId === heldId) hide();
+    };
+
+    const onPointerCancel = (event: PointerEvent) => {
+      if (event.pointerType === "mouse" || event.pointerId === heldId) hide();
     };
 
     /** Keep the window small relative to the portrait at every breakpoint. */
@@ -95,22 +135,26 @@ export default function HeroPortrait({ className }: Props) {
       color.style.setProperty("--reveal-r", `${Math.round(radius)}px`);
     };
 
+    host.addEventListener("pointerdown", onPointerDown);
     host.addEventListener("pointermove", onPointerMove);
+    host.addEventListener("pointerup", onPointerUp);
     host.addEventListener("pointerleave", onPointerLeave);
-    host.addEventListener("pointercancel", onPointerLeave);
+    host.addEventListener("pointercancel", onPointerCancel);
 
     const observer = new ResizeObserver(sizeWindow);
     observer.observe(host);
     sizeWindow();
 
     return () => {
+      host.removeEventListener("pointerdown", onPointerDown);
       host.removeEventListener("pointermove", onPointerMove);
+      host.removeEventListener("pointerup", onPointerUp);
       host.removeEventListener("pointerleave", onPointerLeave);
-      host.removeEventListener("pointercancel", onPointerLeave);
+      host.removeEventListener("pointercancel", onPointerCancel);
       observer.disconnect();
       if (frame) cancelAnimationFrame(frame);
     };
-  }, [reveal]);
+  }, []);
 
   return (
     <div className={cn("relative select-none", className)}>
@@ -141,6 +185,11 @@ export default function HeroPortrait({ className }: Props) {
           style={{
             WebkitMaskImage: "linear-gradient(180deg, #000 0%, #000 92%, transparent 100%)",
             maskImage: "linear-gradient(180deg, #000 0%, #000 92%, transparent 100%)",
+            // The portrait owns every gesture that starts on it, so a drag in
+            // any direction moves the colour window instead of scrolling the
+            // page out from under the finger. Only this box opts out; the rest
+            // of the page keeps its normal scroll.
+            touchAction: "none",
           }}
         >
           {/* Base layer: the photograph in greyscale. */}
@@ -152,34 +201,34 @@ export default function HeroPortrait({ className }: Props) {
             loading="eager"
             decoding="async"
             draggable={false}
-            className="relative z-10 w-full select-none"
-            style={reveal ? { filter: "grayscale(100%) contrast(110%) brightness(96%)" } : undefined}
+            className="relative z-10 block w-full select-none"
+            style={{ filter: "grayscale(100%) contrast(110%) brightness(96%)" }}
           />
 
           {/* Colour layer: the same photograph, visible only inside the mask
-              window that follows the pointer. */}
-          {reveal && (
-            <img
-              ref={colorRef}
-              src={PORTRAIT}
-              alt=""
-              aria-hidden
-              width={760}
-              height={1256}
-              loading="eager"
-              decoding="async"
-              draggable={false}
-              className="pointer-events-none absolute inset-0 z-20 h-full w-full select-none opacity-0 transition-opacity duration-150 ease-out"
-              style={{
-                WebkitMaskImage: REVEAL_MASK,
-                maskImage: REVEAL_MASK,
-                WebkitMaskRepeat: "no-repeat",
-                maskRepeat: "no-repeat",
-                WebkitMaskSize: "100% 100%",
-                maskSize: "100% 100%",
-              }}
-            />
-          )}
+              window that follows the pointer. Always mounted, on every layout. */}
+          <img
+            ref={colorRef}
+            src={PORTRAIT}
+            alt=""
+            aria-hidden
+            width={760}
+            height={1256}
+            loading="eager"
+            decoding="async"
+            draggable={false}
+            className="pointer-events-none absolute inset-0 z-20 block h-full w-full select-none opacity-0 transition-opacity duration-150 ease-out"
+            style={{
+              WebkitMaskImage: REVEAL_MASK,
+              maskImage: REVEAL_MASK,
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "0 0",
+              maskPosition: "0 0",
+              WebkitMaskSize: "100% 100%",
+              maskSize: "100% 100%",
+            }}
+          />
         </div>
       </motion.div>
     </div>

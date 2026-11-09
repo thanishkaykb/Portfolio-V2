@@ -53,7 +53,8 @@ export default function HeroScene({
   return (
     <Canvas
       frameloop={paused ? "never" : reduced ? "demand" : "always"}
-      dpr={[1, 1.75]}
+      dpr={[1, 1.5]}
+      performance={{ min: 0.6 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0, 5.4], fov: 46 }}
       style={{ pointerEvents: "none" }}

@@ -113,14 +113,6 @@ export default function Hero({ entered }: { entered: boolean }) {
                   </span>
                 </motion.h1>
               </div>
-
-              {/* compact portrait beside the name, only on phones */}
-              <motion.div
-                {...anim(0.22)}
-                className="w-[25vw] max-w-[104px] shrink-0 sm:max-w-[136px] lg:hidden"
-              >
-                <HeroPortrait compact />
-              </motion.div>
             </div>
 
             <motion.div
@@ -190,9 +182,9 @@ export default function Hero({ entered }: { entered: boolean }) {
             </motion.div>
           </div>
 
-          {/* portrait on the right on laptop and up — same reveal effect, every layout */}
-          <motion.div {...anim(0.3)} className="hidden lg:col-span-5 lg:block">
-            <div className="relative mx-auto w-full max-w-[310px]">
+          {/* the single portrait: below the text on phones, beside it from lg up */}
+          <motion.div {...anim(0.3)} className="lg:col-span-5">
+            <div className="relative mx-auto w-full max-w-[min(68vw,272px)] sm:max-w-[282px] lg:max-w-[310px]">
               <HeroPortrait />
             </div>
           </motion.div>
