@@ -1,25 +1,24 @@
-# Thanishka Yogesh | Portfolio Version 2
+# Thanishka Yogesh | Developer Portfolio
 
 <p align="center">
   <a href="https://thethanishkayogesh.vercel.app/">
-    <img src="https://img.shields.io/badge/🌐_LIVE_PORTFOLIO-Visit_Website-C9A23F?style=for-the-badge" alt="Live Portfolio" />
+    <img src="https://img.shields.io/badge/LIVE_PORTFOLIO-Visit_Website-C9A23F?style=for-the-badge" alt="Live Portfolio" />
   </a>
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License" />
 </p>
 
 <p align="center">
   <b>A digital space where creativity meets code.</b>
   <br />
-  An immersive, interactive portfolio showcasing my projects, technical skills, experiences, and journey as a developer.
+  An interactive portfolio showcasing my projects, technical skills, experiences, achievements, and creative journey through modern web technologies.
 </p>
 
 <p align="center">
   <a href="https://thethanishkayogesh.vercel.app/">Live Website</a> •
-  <a href="https://github.com/thanishkaykb">GitHub</a> •
-  <a href="https://www.linkedin.com/">LinkedIn</a> •
-  <a href="mailto:thanishka.ykb@gmail.com">Contact</a>
+  <a href="https://github.com/thanishkaykb">GitHub</a>
 </p>
 
 ---
@@ -28,34 +27,33 @@
 
 Welcome to my personal portfolio!
 
-This project is more than a traditional portfolio website. It is an interactive digital experience built to represent my identity, creativity, technical abilities, and work as a Computer Science and Engineering student.
+This project is designed to be more than a traditional portfolio website. It represents my identity, creativity, technical abilities, and journey as a Computer Science and Engineering student.
 
-Designed with a distinctive black-and-golden aesthetic, the portfolio combines immersive 3D environments, interactive elements, smooth animations, and carefully crafted visual experiences.
+Featuring a distinctive black-and-golden aesthetic, the portfolio combines interactive elements, animations, modern web technologies, and carefully crafted visual experiences.
 
-From exploring 3D skill environments to discovering detailed project case studies, every section is designed to make browsing an engaging experience.
+From exploring interactive skill environments to discovering detailed project case studies, every section is designed to make browsing an engaging experience.
 
 **Explore the portfolio:**  
 https://thethanishkayogesh.vercel.app/
 
 ## 🚀 Features
 
-### 1. Immersive Hero Section
+### 1. Hero Section
 - Interactive 3D golden particle environment.
 - Animated concentric rings.
 - Pointer-responsive parallax effects.
-- Golden portrait aperture.
-- Custom animated preloader.
+- Custom portrait presentation.
+- Animated loading experience.
 
-### 2. Interactive 3D Skills World
+### 2. Interactive Skills World
 - Five procedurally generated 3D doors.
 - Interactive hover and opening animations.
 - Individual content sections for different skill disciplines.
-- Pointer-based parallax interactions.
-- Touch gestures, arrow navigation, and keyboard accessibility.
+- Keyboard and touch-friendly navigation.
 
 ### 3. Interactive Ability Card
-- CSS-based 3D rotating card.
-- Realistic depth using 3D transforms.
+- 3D rotating card.
+- Realistic depth using CSS 3D transforms.
 - Pointer-responsive rotation.
 - Animated golden foil lighting.
 - Interactive front-and-back flip.
@@ -65,14 +63,13 @@ https://thethanishkayogesh.vercel.app/
 - Interactive timeline progression.
 - Active entry tracking.
 - Animated progress indicator.
-- Dynamic visual effects.
 
 ### 5. Project Showcase
 - Interactive project cards.
-- Full-screen animated case study overlays.
-- Problem statements and project descriptions.
-- Features, technology stacks, and contributions.
-- Relevant project links.
+- Detailed project case studies.
+- Full-screen animated project overlays.
+- Project descriptions, features, and technology stacks.
+- Relevant project resources and links.
 
 ### 6. Web Development Showcase
 - Dedicated section for web development projects.
@@ -83,7 +80,7 @@ https://thethanishkayogesh.vercel.app/
 ### 7. Frames Gallery
 - Asymmetrical image gallery.
 - Full-screen image lightbox.
-- Keyboard-based image navigation.
+- Keyboard navigation between images.
 - Interactive visual presentation.
 
 ### 8. Contact Section
@@ -91,15 +88,14 @@ https://thethanishkayogesh.vercel.app/
 - Client-side form validation.
 - Individual field error messages.
 - Loading, success, and error states.
-- Functional email client fallback.
+- Email client fallback.
 
 ### 9. Additional Interactions
-- Custom golden cursor on desktop.
+- Custom desktop cursor.
 - Animated navigation.
-- Responsive mobile navigation drawer.
+- Responsive mobile navigation.
 - Smooth scrolling using Lenis.
 - Scroll progress indicator.
-- Active section tracking.
 - Reduced-motion accessibility support.
 - WebGL fallback for unsupported devices.
 
@@ -132,9 +128,6 @@ Portfolio-V2/
 │   └── og-image.png
 │
 ├── scripts/
-│   ├── generate-og.py
-│   └── prepare-sites-build.mjs
-│
 ├── sites/
 │
 ├── src/
@@ -145,15 +138,9 @@ Portfolio-V2/
 │   │   └── ui/
 │   │
 │   ├── lib/
-│   │   ├── data.ts
-│   │   ├── hooks.ts
-│   │   └── useSmoothScroll.ts
-│   │
 │   └── styles/
-│       └── index.css
 │
 ├── .env.example
-├── .gitignore
 ├── index.html
 ├── package.json
 ├── package-lock.json
@@ -167,8 +154,6 @@ Portfolio-V2/
 Follow these steps to run the project locally.
 
 ### Prerequisites
-
-Make sure you have:
 
 - Node.js 20 or later
 - npm
@@ -192,7 +177,7 @@ cd Portfolio-V2
 npm install
 ```
 
-Alternatively, use the committed lockfile:
+Alternatively:
 
 ```bash
 npm ci
@@ -204,7 +189,7 @@ npm ci
 npm run dev
 ```
 
-Open the local URL displayed in your terminal to explore the website.
+Open the local URL displayed in your terminal.
 
 ### 5. Create a Production Build
 
@@ -223,16 +208,14 @@ npm run preview
 | Command | Description |
 |---|---|
 | `npm run dev` | Starts the development server |
-| `npm run build` | Runs type checking and creates the production build |
+| `npm run build` | Creates the production build |
 | `npm run build:sites` | Builds the application and prepares the sites build |
 | `npm run preview` | Previews the production build |
 | `npm run typecheck` | Runs TypeScript type checking |
 
 ## 📬 Contact Form Configuration
 
-The contact form supports a working email client fallback.
-
-By default, submitting the form opens the visitor's configured email application with the message pre-filled.
+The contact form supports an email client fallback.
 
 To enable direct form submissions through an external endpoint:
 
@@ -260,10 +243,7 @@ VITE_CONTACT_ENDPOINT=your_form_endpoint
 
 ## ♿ Accessibility & Performance
 
-Accessibility and usability are important parts of the development process.
-
 - Semantic HTML and accessible landmarks.
-- Skip navigation link.
 - Keyboard-accessible interactive elements.
 - Visible focus indicators.
 - Accessible contact form labels.
@@ -276,23 +256,16 @@ Accessibility and usability are important parts of the development process.
 
 The portfolio is deployed using **Vercel**.
 
-<blockquote>
-  <b>Live Portfolio</b>
-
-  https://thethanishkayogesh.vercel.app/
-</blockquote>
-
-The project can also be deployed on other platforms that support modern Vite applications.
+**Live Website:**  
+https://thethanishkayogesh.vercel.app/
 
 ## 🎨 Design Philosophy
 
-The idea behind this portfolio is simple:
-
 **Your work deserves more than a list of links.**
 
-I wanted to build something that reflects the way I approach development: combining technical thinking, creativity, experimentation, and attention to detail.
+I wanted to build an experience that reflects the way I approach development: combining technical thinking, creativity, experimentation, and attention to detail.
 
-The black-and-golden visual identity, interactive 3D elements, animations, and project presentations come together to create a digital experience that represents me.
+Every interaction, animation, and visual element contributes to telling my story as a developer.
 
 ## 👩‍💻 About Me
 
@@ -310,12 +283,21 @@ I enjoy experimenting with new technologies, learning through building, and cont
 
 ## 🤝 Let's Connect
 
-I'm always open to connecting with fellow developers, collaborating on interesting projects, and exploring new opportunities.
-
 - 🌐 **Portfolio:** https://thethanishkayogesh.vercel.app/
 - 💻 **GitHub:** https://github.com/thanishkaykb
-- 💼 **LinkedIn:** https://www.linkedin.com/
-- 📧 **Email:** thanishka.ykb@gmail.com
+- 💼 **LinkedIn:** https://www.linkedin.com/in/thanishka-yogesh/
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, subject to the conditions specified in the MIT License.
+
+The original copyright notice and permission notice must be included in all copies or substantial portions of the software.
+
+See the [LICENSE](LICENSE) file for the complete license terms.
+
+**Copyright © 2026 Thanishka Yogesh.**
 
 ---
 
@@ -324,5 +306,5 @@ I'm always open to connecting with fellow developers, collaborating on interesti
   <br /><br />
   If you enjoyed exploring this project, consider giving the repository a ⭐!
   <br /><br />
-  © 2026 Thanishka Yogesh. All rights reserved.
+  © 2026 Thanishka Yogesh. All rights reserved under the terms of the MIT License.
 </p>
