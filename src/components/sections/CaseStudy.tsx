@@ -2,8 +2,23 @@ import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Project } from "../../lib/data";
 import { projects } from "../../lib/data";
-import { useBodyLock } from "../../lib/hooks";
+import { jumpToScroll, useBodyLock } from "../../lib/hooks";
 import ProjectArtwork from "../ui/ProjectArtwork";
+
+type ScrollSnapshot = {
+  windowY: number;
+  /** The door sheet and any other fixed panel scroll themselves, not the page. */
+  scrollers: { el: HTMLElement; top: number }[];
+};
+
+/** Reads every scroll offset the page is showing at this moment. */
+function captureScroll(): ScrollSnapshot {
+  const scrollers: { el: HTMLElement; top: number }[] = [];
+  document.querySelectorAll<HTMLElement>("[data-lenis-prevent]").forEach((el) => {
+    if (el.scrollTop > 0) scrollers.push({ el, top: el.scrollTop });
+  });
+  return { windowY: window.scrollY, scrollers };
+}
 
 type Props = {
   project: Project | null;
@@ -13,6 +28,42 @@ type Props = {
 
 export default function CaseStudy({ project, onClose, onChange }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const snapshotRef = useRef<ScrollSnapshot | null>(null);
+
+  // Remember where the visitor was, then put them back there once the overlay
+  // has gone. This effect is declared before useBodyLock so the capture still
+  // sees a scrollable page: the lock below is what collapses the window scroll.
+  useEffect(() => {
+    if (project) {
+      // Opening, or moving between projects with next/previous: keep the
+      // original position from the first open only.
+      if (!snapshotRef.current) snapshotRef.current = captureScroll();
+      return;
+    }
+
+    const saved = snapshotRef.current;
+    if (!saved) return;
+    snapshotRef.current = null;
+
+    // Wait for the body and html overflow locks to be released and for the
+    // exit animation to settle before touching scroll, then restore in a
+    // second frame so no layout shift happens after the jump.
+    let inner = 0;
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => {
+        for (const { el, top } of saved.scrollers) {
+          if (el.isConnected) el.scrollTop = top;
+        }
+        jumpToScroll(saved.windowY);
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(outer);
+      cancelAnimationFrame(inner);
+    };
+  }, [project]);
+
   useBodyLock(Boolean(project));
 
   useEffect(() => {

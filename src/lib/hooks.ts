@@ -41,6 +41,19 @@ export function scrollToTop() {
   else window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+/**
+ * Jump the page to an exact offset with no animation. Lenis keeps its own
+ * target, so it has to be told too, otherwise the next frame pulls the page
+ * back to wherever it last thought it was.
+ */
+export function jumpToScroll(top: number) {
+  if (lenisInstance) {
+    lenisInstance.scrollTo(top, { immediate: true });
+    return;
+  }
+  window.scrollTo(0, top);
+}
+
 /* ------------------------------------------------------------------ */
 /*  Media queries / capability detection                              */
 /* ------------------------------------------------------------------ */

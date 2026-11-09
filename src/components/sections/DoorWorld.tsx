@@ -111,7 +111,12 @@ export default function DoorWorld() {
   useEffect(() => {
     if (!revealed) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeDoor();
+      if (event.key !== "Escape") return;
+      // A case study sits on top of the sheet and closes on Escape itself. If
+      // this handler also ran, it would shut the door and lose the reader's
+      // place in the project list.
+      if (document.querySelector('[role="dialog"][aria-labelledby="case-title"]')) return;
+      closeDoor();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
