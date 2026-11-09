@@ -1,108 +1,328 @@
-# Thanishka Yogesh - Immersive 3D Portfolio
+# Thanishka Yogesh | Portfolio Version 2
 
-A black-and-golden-yellow personal portfolio built with React, Vite, TypeScript, Tailwind CSS v4,
-Three.js / React Three Fiber, GSAP ScrollTrigger, Framer Motion and Lenis.
+<p align="center">
+  <a href="https://thethanishkayogesh.vercel.app/">
+    <img src="https://img.shields.io/badge/🌐_LIVE_PORTFOLIO-Visit_Website-C9A23F?style=for-the-badge" alt="Live Portfolio" />
+  </a>
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+</p>
 
-## Run it
+<p align="center">
+  <b>A digital space where creativity meets code.</b>
+  <br />
+  An immersive, interactive portfolio showcasing my projects, technical skills, experiences, and journey as a developer.
+</p>
+
+<p align="center">
+  <a href="https://thethanishkayogesh.vercel.app/">Live Website</a> •
+  <a href="https://github.com/thanishkaykb">GitHub</a> •
+  <a href="https://www.linkedin.com/">LinkedIn</a> •
+  <a href="mailto:thanishka.ykb@gmail.com">Contact</a>
+</p>
+
+---
+
+## ✨ Overview
+
+Welcome to my personal portfolio!
+
+This project is more than a traditional portfolio website. It is an interactive digital experience built to represent my identity, creativity, technical abilities, and work as a Computer Science and Engineering student.
+
+Designed with a distinctive black-and-golden aesthetic, the portfolio combines immersive 3D environments, interactive elements, smooth animations, and carefully crafted visual experiences.
+
+From exploring 3D skill environments to discovering detailed project case studies, every section is designed to make browsing an engaging experience.
+
+**Explore the portfolio:**  
+https://thethanishkayogesh.vercel.app/
+
+## 🚀 Features
+
+### 1. Immersive Hero Section
+- Interactive 3D golden particle environment.
+- Animated concentric rings.
+- Pointer-responsive parallax effects.
+- Golden portrait aperture.
+- Custom animated preloader.
+
+### 2. Interactive 3D Skills World
+- Five procedurally generated 3D doors.
+- Interactive hover and opening animations.
+- Individual content sections for different skill disciplines.
+- Pointer-based parallax interactions.
+- Touch gestures, arrow navigation, and keyboard accessibility.
+
+### 3. Interactive Ability Card
+- CSS-based 3D rotating card.
+- Realistic depth using 3D transforms.
+- Pointer-responsive rotation.
+- Animated golden foil lighting.
+- Interactive front-and-back flip.
+
+### 4. Journey & Experience Timeline
+- Scroll-triggered animations using GSAP.
+- Interactive timeline progression.
+- Active entry tracking.
+- Animated progress indicator.
+- Dynamic visual effects.
+
+### 5. Project Showcase
+- Interactive project cards.
+- Full-screen animated case study overlays.
+- Problem statements and project descriptions.
+- Features, technology stacks, and contributions.
+- Relevant project links.
+
+### 6. Web Development Showcase
+- Dedicated section for web development projects.
+- Interactive project exploration.
+- Detailed project information.
+- Visual project presentations.
+
+### 7. Frames Gallery
+- Asymmetrical image gallery.
+- Full-screen image lightbox.
+- Keyboard-based image navigation.
+- Interactive visual presentation.
+
+### 8. Contact Section
+- Interactive contact form.
+- Client-side form validation.
+- Individual field error messages.
+- Loading, success, and error states.
+- Functional email client fallback.
+
+### 9. Additional Interactions
+- Custom golden cursor on desktop.
+- Animated navigation.
+- Responsive mobile navigation drawer.
+- Smooth scrolling using Lenis.
+- Scroll progress indicator.
+- Active section tracking.
+- Reduced-motion accessibility support.
+- WebGL fallback for unsupported devices.
+
+## 🛠️ Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| React 19 | Frontend development |
+| TypeScript | Type safety |
+| Vite | Development and build tooling |
+| Tailwind CSS v4 | Styling and responsive layouts |
+| Three.js | 3D graphics |
+| React Three Fiber | React-based 3D rendering |
+| GSAP | Advanced animations and scroll interactions |
+| Framer Motion | UI animations |
+| Lenis | Smooth scrolling |
+| CSS 3D Transforms | Interactive visual effects |
+
+## 📁 Project Structure
+
+```text
+Portfolio-V2/
+│
+├── public/
+│   ├── images/
+│   ├── frames/
+│   ├── resume/
+│   ├── robots.txt
+│   ├── sitemap.xml
+│   └── og-image.png
+│
+├── scripts/
+│   ├── generate-og.py
+│   └── prepare-sites-build.mjs
+│
+├── sites/
+│
+├── src/
+│   ├── components/
+│   │   ├── layout/
+│   │   ├── sections/
+│   │   ├── three/
+│   │   └── ui/
+│   │
+│   ├── lib/
+│   │   ├── data.ts
+│   │   ├── hooks.ts
+│   │   └── useSmoothScroll.ts
+│   │
+│   └── styles/
+│       └── index.css
+│
+├── .env.example
+├── .gitignore
+├── index.html
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
+```
+
+## ⚙️ Getting Started
+
+Follow these steps to run the project locally.
+
+### Prerequisites
+
+Make sure you have:
+
+- Node.js 20 or later
+- npm
+- Git
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/thanishkaykb/Portfolio-V2.git
+```
+
+### 2. Navigate to the Project Directory
+
+```bash
+cd Portfolio-V2
+```
+
+### 3. Install Dependencies
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
-npm run build      # typecheck + production build
+```
+
+Alternatively, use the committed lockfile:
+
+```bash
+npm ci
+```
+
+### 4. Start the Development Server
+
+```bash
+npm run dev
+```
+
+Open the local URL displayed in your terminal to explore the website.
+
+### 5. Create a Production Build
+
+```bash
+npm run build
+```
+
+### 6. Preview the Production Build
+
+```bash
 npm run preview
 ```
 
-Node 20+ recommended. The lockfile (`package-lock.json`) is committed - restore with `npm ci`.
+## 📜 Available Scripts
 
-## What is actually interactive
+| Command | Description |
+|---|---|
+| `npm run dev` | Starts the development server |
+| `npm run build` | Runs type checking and creates the production build |
+| `npm run build:sites` | Builds the application and prepares the sites build |
+| `npm run preview` | Previews the production build |
+| `npm run typecheck` | Runs TypeScript type checking |
 
-| Feature | Where | How it works |
-| --- | --- | --- |
-| 3D door corridor | `#skills` | Five procedural Three.js doors (frames, hinged panels, gold seams, doorway lights, floor pools) on a wall you travel along. Pointer parallax, hover lift, click-to-open with a real 180°-style hinge animation and lit doorway, then a content docket per discipline. Swipe on touch, arrow buttons and keyboard-focusable labels. |
-| 3D ability card | `#ability` | CSS-3D card with preserved-3D children at different Z depths, pointer-driven rotateX/rotateY, moving gold foil glare, front/back flip with real back-face content. No invented proficiency scores. |
-| Hero scene | `#home` | R3F golden dust + concentric rings with pointer parallax, behind a golden portrait aperture. |
-| Timeline | `#story` | GSAP ScrollTrigger reveals, per-entry active index, scrubbed progress line and digit rain. |
-| Project case studies | `#projects` | Full-screen animated overlays with problem, features, stack, contribution and honest links. |
-| Frames gallery | `#frames` | Asymmetric grid + full-screen lightbox with arrow-key navigation. |
-| Contact form | `#contact` | Client-side validation with per-field errors, loading / success / error states and a working `mailto:` fallback. |
-| Cursor, preloader, nav | global | Custom gold cursor (desktop only), counter preloader, scroll progress, active section tracking, mobile drawer. |
+## 📬 Contact Form Configuration
 
-Reduced-motion preferences disable smooth scroll, the cursor, the preloader animation, the marquee and
-GSAP motion. Devices without WebGL get a plain, usable door grid instead of the canvas.
+The contact form supports a working email client fallback.
 
-## Content and where it came from
+By default, submitting the form opens the visitor's configured email application with the message pre-filled.
 
-Everything on the site comes from:
+To enable direct form submissions through an external endpoint:
 
-- the details you supplied (name, degree, department, college, location, email, phone, links);
-- your public GitHub repositories and READMEs (read October 2026), including live URLs;
-- your résumé (`Thanishka_Yogesh_Resume.pdf`) for the CGPA, internships, project bullets and
-  certifications;
-- your LinkedIn profile PDF (`Profile (1).pdf`) for leadership roles, ambassadorships, honours and
-  community involvement.
+1. Create a `.env` file using `.env.example` as a reference.
+2. Configure the endpoint:
 
-No clients, metrics, certifications, job titles or awards were invented. Every prize names its
-event, and participation is never described as a win.
-
-## Résumé
-
-`public/resume/Thanishka-Yogesh-Resume.pdf` is live - the nav button now opens and downloads it.
-Because the PDF itself could not be read from the workspace (only its extracted text was available),
-it was regenerated as a clean two-page, on-brand document from that content with
-`scripts/generate-resume.py` (needs `reportlab`). If you want your exact original file served,
-replace the PDF at the same path - nothing in the code needs to change.
-
-## Still needed from you
-
-1. **Photograph** - save it as `public/images/portrait.jpg` (square or portrait crop, 800–1400px).
-   It drops straight into the hero and about apertures with the gold rim treatment. Until then an
-   original monogram/light study is shown instead of a stock face.
-2. **Verify the résumé** - the PDF currently served is regenerated from your résumé text. Open it, and
-   replace it with your original PDF if you prefer the exact file.
-3. **Real screenshots (optional)** - project previews are original code-drawn artwork. Replace any
-   `<ProjectArtwork />` usage in `src/components/sections/Projects.tsx`, `WebCraft.tsx` or
-   `Frames.tsx` with an `<img>` when you have real screenshots, or drop photographs into
-   `public/frames/` and add entries in `src/lib/data.ts`.
-4. **Custom domain** - update the canonical/OG URLs in `index.html`, `public/robots.txt` and
-   `public/sitemap.xml`.
-
-## Contact form
-
-Without configuration, submitting opens the visitor's mail client with the message pre-filled
-(a functioning fallback, not a fake success). To send in-page:
-
-```bash
-cp .env.example .env
-# set VITE_CONTACT_ENDPOINT to a form endpoint that accepts JSON
-# { name, email, subject, message }
+```env
+VITE_CONTACT_ENDPOINT=your_form_endpoint
 ```
 
-Then rebuild. Providers such as Formspree, Basin or your own serverless function work; no secret key
-belongs in a `VITE_` variable, so use the provider's public form ID.
+3. Ensure the endpoint accepts JSON data containing:
 
-## Project structure
-
-```
-src/
-  components/
-    layout/    Nav, Footer, Cursor, Preloader
-    sections/  Hero, DoorWorld, AbilitySection/AbilityCard, About, Story,
-               Projects, CaseStudy, WebCraft, Experience, Frames, Contact
-    three/     DoorScene, HeroScene, GoldenDust
-    ui/        SectionHeading, PortraitAperture, ProjectArtwork, ResumeDialog, Marquee
-  lib/         data.ts (all content), hooks.ts, useSmoothScroll.ts
-  styles/      index.css (Tailwind v4 theme + base + components)
-scripts/       generate-og.py (regenerates public/og-image.png)
+```json
+{
+  "name": "Visitor Name",
+  "email": "visitor@example.com",
+  "subject": "Hello",
+  "message": "Your message here"
+}
 ```
 
-## Social preview
+4. Rebuild and redeploy the application.
 
-`public/og-image.png` is generated by `python3 scripts/generate-og.py` (requires Pillow). Delete and
-regenerate after changing the name, role or tagline.
+**Security note:** Never expose private API keys or secret credentials through client-side environment variables.
 
-## Accessibility notes
+## ♿ Accessibility & Performance
 
-- Skip link, landmark elements, one `h1`, labelled form fields and `aria-live` feedback.
-- All interactive 3D labels are real buttons (focusable, Enter/Space works).
-- Focus-visible outlines use the gold accent; overlays trap scroll and close on `Escape`.
-- Colour contrast targets WCAG AA against `#080808` for body copy.
+Accessibility and usability are important parts of the development process.
+
+- Semantic HTML and accessible landmarks.
+- Skip navigation link.
+- Keyboard-accessible interactive elements.
+- Visible focus indicators.
+- Accessible contact form labels.
+- Reduced-motion preferences.
+- WebGL fallback for unsupported devices.
+- Responsive layouts for different screen sizes.
+- Keyboard navigation for interactive overlays.
+
+## 🌐 Deployment
+
+The portfolio is deployed using **Vercel**.
+
+<blockquote>
+  <b>Live Portfolio</b>
+
+  https://thethanishkayogesh.vercel.app/
+</blockquote>
+
+The project can also be deployed on other platforms that support modern Vite applications.
+
+## 🎨 Design Philosophy
+
+The idea behind this portfolio is simple:
+
+**Your work deserves more than a list of links.**
+
+I wanted to build something that reflects the way I approach development: combining technical thinking, creativity, experimentation, and attention to detail.
+
+The black-and-golden visual identity, interactive 3D elements, animations, and project presentations come together to create a digital experience that represents me.
+
+## 👩‍💻 About Me
+
+I'm **Thanishka Yogesh**, a Computer Science and Engineering student at Sri Sairam Engineering College, Chennai.
+
+I'm passionate about:
+
+- Web development and full-stack development.
+- Building interactive digital experiences.
+- Exploring modern web technologies.
+- Designing and developing creative projects.
+- Turning ideas into practical solutions.
+
+I enjoy experimenting with new technologies, learning through building, and continuously improving my development skills.
+
+## 🤝 Let's Connect
+
+I'm always open to connecting with fellow developers, collaborating on interesting projects, and exploring new opportunities.
+
+- 🌐 **Portfolio:** https://thethanishkayogesh.vercel.app/
+- 💻 **GitHub:** https://github.com/thanishkaykb
+- 💼 **LinkedIn:** https://www.linkedin.com/
+- 📧 **Email:** thanishka.ykb@gmail.com
+
+---
+
+<p align="center">
+  <b>Designed with intention. Developed with curiosity. Built with code.</b>
+  <br /><br />
+  If you enjoyed exploring this project, consider giving the repository a ⭐!
+  <br /><br />
+  © 2026 Thanishka Yogesh. All rights reserved.
+</p>
