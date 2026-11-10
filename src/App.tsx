@@ -14,12 +14,10 @@ import Story from "./components/sections/Story";
 import BackToTop from "./components/ui/BackToTop";
 import ContactDialog from "./components/ui/ContactDialog";
 import Marquee from "./components/ui/Marquee";
-import ResumeDialog, { useResumeDialog } from "./components/ui/ResumeDialog";
 import { useSmoothScroll } from "./lib/useSmoothScroll";
 
 export default function App() {
   const [entered, setEntered] = useState(false);
-  const resume = useResumeDialog();
   useSmoothScroll();
 
   return (
@@ -33,7 +31,7 @@ export default function App() {
 
       <Preloader onEntered={() => setEntered(true)} />
       <Cursor />
-      <Nav onResume={resume.openDialog} />
+      <Nav />
 
       <main id="main">
         <ErrorBoundary label="page content">
@@ -50,7 +48,6 @@ export default function App() {
 
       <Footer />
       <BackToTop />
-      <ResumeDialog open={resume.open} onClose={resume.closeDialog} />
       <ContactDialog />
       <div className="noise-overlay" aria-hidden />
     </div>

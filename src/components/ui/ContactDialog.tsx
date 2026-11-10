@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { profile } from "../../lib/data";
 import { subscribeContactDialog } from "../../lib/contactDialog";
 import { useBodyLock } from "../../lib/hooks";
+import { closeIconButtonClass } from "../../lib/closeButton";
+import { isTopOverlay, useOverlayHistory, useOverlayReopen } from "../../lib/overlayHistory";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -19,15 +21,24 @@ export default function ContactDialog() {
 
   useEffect(() => subscribeContactDialog(() => setOpen(true)), []);
 
+  const { dismiss } = useOverlayHistory(open, { kind: "contact" }, () => setOpen(false));
+
+  // Forward navigation can bring the card back.
+  useOverlayReopen((ref) => {
+    if (ref.kind === "contact") setOpen(true);
+  });
+
   useEffect(() => {
     if (!open) return;
     closeRef.current?.focus();
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      if (!isTopOverlay({ kind: "contact" })) return;
+      dismiss();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, dismiss]);
 
   return createPortal(
     <AnimatePresence>
@@ -38,7 +49,7 @@ export default function ContactDialog() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          onClick={() => setOpen(false)}
+          onClick={dismiss}
           className="fixed inset-0 z-[95] grid place-items-center overflow-y-auto bg-ink/85 p-4 backdrop-blur-xl"
         >
           <motion.div
@@ -54,9 +65,9 @@ export default function ContactDialog() {
           >
             <button
               ref={closeRef}
-              onClick={() => setOpen(false)}
+              onClick={dismiss}
               aria-label="Close contact details"
-              className="absolute right-3 top-3 grid h-8 w-8 place-items-center border border-line font-mono text-[11px] text-muted transition-colors hover:border-gold hover:text-gold"
+              className={`absolute right-3 top-3 ${closeIconButtonClass}`}
             >
               ✕
             </button>

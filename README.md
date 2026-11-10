@@ -33,7 +33,7 @@ Featuring a distinctive black-and-golden aesthetic, the portfolio combines inter
 
 From exploring interactive skill environments to discovering detailed project case studies, every section is designed to make browsing an engaging experience.
 
-**Explore the portfolio:**  
+**Explore the portfolio:**
 https://thethanishkayogesh.vercel.app/
 
 ## 🚀 Features
@@ -98,6 +98,8 @@ https://thethanishkayogesh.vercel.app/
 - Scroll progress indicator.
 - Reduced-motion accessibility support.
 - WebGL fallback for unsupported devices.
+- Responsive layouts for different screen sizes.
+- Keyboard navigation for interactive overlays.
 
 ## 🛠️ Tech Stack
 
@@ -128,17 +130,27 @@ Portfolio-V2/
 │   └── og-image.png
 │
 ├── scripts/
+│   ├── generate-og.py
+│   ├── generate-resume.py
+│   ├── generate-github-contributions.py
+│   ├── screenshots.mjs
+│   └── prepare-sites-build.mjs
+│
 ├── sites/
 │
 ├── src/
 │   ├── components/
-│   │   ├── layout/
-│   │   ├── sections/
-│   │   ├── three/
-│   │   └── ui/
+│   │   ├── layout/    Nav, Footer, Cursor, Preloader, ErrorBoundary
+│   │   ├── sections/  Hero, DoorWorld, AbilitySection/AbilityCard, About, Story,
+│   │   │              Projects, CaseStudy, WebCraft, Contact, Events, Recognition, Writing, GitHubCard
+│   │   ├── three/     DoorScene, HeroScene, GoldenDust
+│   │   └── ui/        SectionHeading, PortraitAperture, ProjectArtwork, Marquee,
+│   │                  ContactDialog, HeroPortrait, BackToTop
 │   │
-│   ├── lib/
-│   └── styles/
+│   ├── lib/           data.ts (all content), hooks.ts, useSmoothScroll.ts,
+│   │                  contactDialog.ts, overlayHistory.ts, reportClientError.ts,
+│   │                  doors.ts, github-contributions.ts, github-live.ts, closeButton.ts
+│   └── styles/        index.css (Tailwind v4 theme + base + components)
 │
 ├── .env.example
 ├── index.html
@@ -217,29 +229,38 @@ npm run preview
 
 The contact form supports an email client fallback.
 
-To enable direct form submissions through an external endpoint:
+Without configuration, submitting opens the visitor's mail client with the message pre-filled (a functioning fallback, not a fake success). To send in-page:
 
 1. Create a `.env` file using `.env.example` as a reference.
 2. Configure the endpoint:
-
-```env
-VITE_CONTACT_ENDPOINT=your_form_endpoint
-```
-
-3. Ensure the endpoint accepts JSON data containing:
-
-```json
-{
-  "name": "Visitor Name",
-  "email": "visitor@example.com",
-  "subject": "Hello",
-  "message": "Your message here"
-}
-```
-
-4. Rebuild and redeploy the application.
+   - set `VITE_CONTACT_ENDPOINT` to a form endpoint that accepts JSON `{ name, email, subject, message }`.
+3. Rebuild and redeploy the application.
 
 **Security note:** Never expose private API keys or secret credentials through client-side environment variables.
+
+## Source & content notes
+
+The content in this portfolio was assembled from primary sources only:
+
+- the details you supplied (name, degree, department, college, location, email, links);
+- your public GitHub repositories and READMEs (read October 2026), including live URLs;
+- your résumé (`Thanishka_Yogesh_Resume.pdf`) for the CGPA, internships, project bullets and certifications;
+- your LinkedIn profile PDF (`Profile (1).pdf`) for leadership roles, ambassadorships, honours and community involvement.
+
+No clients, metrics, certifications, job titles or awards were invented. Every prize names its event, and participation is never described as a win.
+
+## Résumé
+
+`public/resume/Thanishka-Yogesh-Resume.pdf` is live - the Resume button in the nav downloads it directly, on every layout, with no dialog in between.
+If you want your exact original file served, replace the PDF at the same path - nothing in the code needs to change.
+
+## Still needed from you
+
+1. **Photograph** - save it as `public/images/portrait.jpg` (square or portrait crop, 800-1400px).
+   It drops straight into the hero and about apertures with the gold rim treatment. Until then an original monogram/light study is shown instead of a stock face.
+2. **Verify the résumé** - the PDF currently served is regenerated from your résumé text. Open it, and replace it with your original PDF if you prefer the exact file.
+3. **Real screenshots (optional)** - project previews are original code-drawn artwork. Replace any `<ProjectArtwork />` usage in `src/components/sections/Projects.tsx`, `WebCraft.tsx` or `Frames.tsx` with an `<img>` when you have real screenshots, or drop photographs into `public/frames/` and add entries in `src/lib/data.ts`.
+4. **Custom domain** - update the canonical/OG URLs in `index.html`, `public/robots.txt` and `public/sitemap.xml`.
 
 ## ♿ Accessibility & Performance
 
@@ -256,7 +277,8 @@ VITE_CONTACT_ENDPOINT=your_form_endpoint
 
 The portfolio is deployed using **Vercel**.
 
-**Live Website:**  
+**Live Website:**
+
 https://thethanishkayogesh.vercel.app/
 
 ## 🎨 Design Philosophy

@@ -6,12 +6,16 @@ import { openDoor, subscribeDoorOpen } from "../../lib/doors";
 import { openContactDialog } from "../../lib/contactDialog";
 import {
   cn,
+  jumpToScroll,
   scrollToSection,
   useBodyLock,
   useIsVisible,
   useIsTouch,
+  useReducedMotion,
   useWebGLSupport,
 } from "../../lib/hooks";
+import { closeButtonClass } from "../../lib/closeButton";
+import { isTopOverlay, useOverlayHistory, useOverlayReopen } from "../../lib/overlayHistory";
 import ErrorBoundary from "../layout/ErrorBoundary";
 import SectionHeading from "../ui/SectionHeading";
 import { ProjectsShowcase } from "./Projects";
@@ -26,9 +30,12 @@ export default function DoorWorld() {
   const [expanding, setExpanding] = useState<number | null>(null);
   // The sheet only covers the scene once the door has visibly swung open.
   const [revealed, setRevealed] = useState(false);
-  // Phone-only: the card swings open before the sheet zooms in.
+  // Phone: the card swings open before the sheet zooms in.
   const [mobileOpening, setMobileOpening] = useState<number | null>(null);
-  const [mobileGlow, setMobileGlow] = useState<{ x: number; y: number } | null>(null);
+  // The gold light that bursts out of a door before its sheet appears. Every
+  // layout uses it, with the phone starting at the tapped door and the wider
+  // layouts at the middle of the screen.
+  const [glow, setGlow] = useState<{ x: number; y: number } | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   // Which door the controls are pointing at. Choosing a door here only changes
   // the selection; the sheet opens on "Open door", a click on the door itself,
@@ -41,6 +48,7 @@ export default function DoorWorld() {
   const sheetRef = useRef<HTMLDivElement | null>(null);
   const webgl = useWebGLSupport();
   const isTouch = useIsTouch();
+  const reducedMotion = useReducedMotion();
   const { ref, visible } = useIsVisible<HTMLDivElement>();
 
   const focusIndex = opened ?? expanding ?? activeIndex;
@@ -86,41 +94,66 @@ export default function DoorWorld() {
   const closeDoor = () => {
     setRevealed(false);
     setMobileOpening(null);
-    setMobileGlow(null);
+    setGlow(null);
     clearTimers();
     // Let the sheet fade out before the panel swings shut and the camera pulls
     // back to the corridor, then restore the scroll position to where the viewer
     // was looking before opening the door.
     revealTimer.current = window.setTimeout(() => {
       setOpened(null);
-      // Restore to the exact pre-open scroll position. Using auto avoids any
-      // smooth-scroll animation that would fight the body lock un-locking.
-      window.scrollTo({ top: savedScrollY.current, behavior: "auto" });
-      // If an anchor button had been recorded, try to snap to it as a fallback
-      // for anchor-driven opens (links, nav, hero).
-      if (scrollAnchorRef.current) {
-        const rect = scrollAnchorRef.current.getBoundingClientRect();
-        window.scrollTo({
-          top: window.scrollY + rect.top,
-          behavior: "auto",
+      // Restore only once the lock above has been released and the page is
+      // painted again, otherwise the scroll is swallowed by overflow: hidden.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          jumpToScroll(savedScrollY.current);
+          // If an anchor button had been recorded, try to snap to it as a fallback
+          // for anchor-driven opens (links, nav, hero).
+          if (scrollAnchorRef.current) {
+            const rect = scrollAnchorRef.current.getBoundingClientRect();
+            jumpToScroll(window.scrollY + rect.top);
+          }
         });
-      }
+      });
     }, 460);
   };
+
+  // The sheet owns one history entry, so Back and the phone swipe-back close
+  // it through the same closeDoor path the Close button uses.
+  const { dismiss: dismissDoor } = useOverlayHistory(
+    revealed,
+    revealed && opened !== null ? { kind: "door", id: doors[opened].id } : null,
+    closeDoor,
+  );
 
   useEffect(() => {
     if (!revealed) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      // A case study sits on top of the sheet and closes on Escape itself. If
-      // this handler also ran, it would shut the door and lose the reader's
-      // place in the project list.
-      if (document.querySelector('[role="dialog"][aria-labelledby="case-title"]')) return;
-      closeDoor();
+      // A case study or the contact card can sit on top of the sheet and closes
+      // on Escape itself. If this handler also ran, Escape would shut both
+      // layers and lose the reader's place.
+      if (opened === null || !isTopOverlay({ kind: "door", id: doors[opened].id })) return;
+      dismissDoor();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [revealed]);
+  }, [revealed, opened, dismissDoor]);
+
+  /**
+   * The soft gold bloom that leaves a door as it swings open. Without an origin
+   * it leaves from the middle of the screen, which is where the corridor's open
+   * door sits. Reduced-motion users get no bloom.
+   */
+  const startGlow = (origin: { x: number; y: number } | null) => {
+    // The soft gold bloom is a phone-only touch gesture here. Desktop and
+    // tablet drive their door from the 3D corridor, so they get no burst — the
+    // door just opens inside the corridor and the content sheet settles over it.
+    if (reducedMotion || !isTouch) return;
+    setGlow({
+      x: origin?.x ?? window.innerWidth / 2,
+      y: origin?.y ?? window.innerHeight / 2,
+    });
+  };
 
   /**
    * The full opening: the door is pushed forward, its panel swings open while
@@ -139,12 +172,23 @@ export default function DoorWorld() {
     openTimer.current = window.setTimeout(() => {
       setExpanding(null);
       setOpened(index);
-      revealTimer.current = window.setTimeout(() => setRevealed(true), 860);
+      // Only now does the panel start to swing, so only now does the light come:
+      // the beam leaves the doorway as it opens and has covered the screen by
+      // the time the sheet mounts.
+      startGlow(null);
+      revealTimer.current = window.setTimeout(() => setRevealed(true), 900);
     }, 470);
   };
 
   const handleOpen = (index: number) => openDoorAt(index);
   const requestOpen = (index: number) => openDoorAt(index);
+
+  // Forward navigation reopens the door that the history entry remembers.
+  useOverlayReopen((ref) => {
+    if (ref.kind !== "door") return;
+    const index = doors.findIndex((door) => door.id === ref.id);
+    if (index >= 0) openDoorAt(index);
+  });
 
   /** Phone doors swing on their hinge, then hand over to the zooming sheet. */
   const openMobileDoor = (index: number, origin: { x: number; y: number }) => {
@@ -155,7 +199,7 @@ export default function DoorWorld() {
     // Record the pre-open scroll position for mobile door opens too.
     savedScrollY.current = window.scrollY;
     setMobileOpening(index);
-    setMobileGlow(origin);
+    startGlow(origin);
     openTimer.current = window.setTimeout(() => {
       setOpened(index);
       revealTimer.current = window.setTimeout(() => setRevealed(true), 320);
@@ -442,10 +486,11 @@ export default function DoorWorld() {
                           Door {current.index} · {current.kicker}
                         </span>
                         <button
-                          onClick={closeDoor}
-                          className="shrink-0 border border-line px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted transition-colors hover:border-gold hover:text-gold"
+                          onClick={dismissDoor}
+                          aria-label="Close door"
+                          className={closeButtonClass}
                         >
-                          Close ✕
+                          Close <span aria-hidden>✕</span>
                         </button>
                       </div>
                     </div>
@@ -630,19 +675,22 @@ export default function DoorWorld() {
         </div>
       </div>
 
-      {/* phone-only light burst: a small point grows into the doorway light */}
+      {/* The doorway light: the small bloom at the door swells and dissolves on
+          its own. Every layout uses it, with the phone starting at the tapped
+          door and the wider layouts at the door in the middle of the screen. */}
       {createPortal(
-        mobileGlow ? (
+        glow ? (
           <div
             aria-hidden
+            data-door-glow
             className="pointer-events-none fixed inset-0 z-[64] overflow-hidden"
           >
             <motion.span
-              data-mobile-glow
+              key={`${glow.x}-${glow.y}`}
               className="absolute rounded-full"
               style={{
-                left: mobileGlow.x,
-                top: mobileGlow.y,
+                left: glow.x,
+                top: glow.y,
                 width: 240,
                 height: 240,
                 background:
@@ -662,7 +710,7 @@ export default function DoorWorld() {
                 x: { duration: 0.95 },
                 y: { duration: 0.95 },
               }}
-              onAnimationComplete={() => setMobileGlow(null)}
+              onAnimationComplete={() => setGlow(null)}
             />
           </div>
         ) : null,

@@ -66,7 +66,7 @@ export default function Footer() {
                 { label: "GitHub", href: profile.github },
                 { label: "LinkedIn", href: profile.linkedin },
                 { label: "Previous portfolio", href: profile.previousPortfolio },
-                { label: profile.phone, href: `tel:${profile.phoneHref}` },
+                { label: "Email", href: `mailto:${profile.email}` },
               ].map((item) => (
                 <li key={item.label}>
                   <a
@@ -76,9 +76,11 @@ export default function Footer() {
                     className="inline-flex items-center gap-2 text-sm text-bone/80 transition-colors hover:text-gold"
                   >
                     {item.label}
-                    <span aria-hidden className="text-[10px] text-gold/60">
-                      ↗
-                    </span>
+                    {item.href.startsWith("http") && (
+                      <span aria-hidden className="text-[10px] text-gold/60">
+                        ↗
+                      </span>
+                    )}
                   </a>
                 </li>
               ))}

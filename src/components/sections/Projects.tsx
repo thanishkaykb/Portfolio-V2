@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { moreProjects, profile, projects } from "../../lib/data";
 import { cn, scrollToSection, useReducedMotion } from "../../lib/hooks";
+import { useOverlayReopen } from "../../lib/overlayHistory";
 import SectionHeading from "../ui/SectionHeading";
 import ProjectArtwork from "../ui/ProjectArtwork";
 import CaseStudy from "./CaseStudy";
@@ -21,6 +22,13 @@ type Props = {
 export function ProjectsShowcase({ onWorkWithMe, showCta = true }: Props) {
   const [selected, setSelected] = useState<Project | null>(null);
   const reduced = useReducedMotion();
+
+  // Forward navigation reopens the case study the history entry remembers.
+  useOverlayReopen((ref) => {
+    if (ref.kind !== "case-study") return;
+    const match = projects.find((project) => project.slug === ref.slug);
+    if (match) setSelected(match);
+  });
 
   return (
     <div>

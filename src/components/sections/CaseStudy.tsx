@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { Project } from "../../lib/data";
 import { projects } from "../../lib/data";
 import { jumpToScroll, useBodyLock } from "../../lib/hooks";
+import { closeButtonClass } from "../../lib/closeButton";
+import { isTopOverlay, useOverlayHistory } from "../../lib/overlayHistory";
 import ProjectArtwork from "../ui/ProjectArtwork";
 
 type ScrollSnapshot = {
@@ -29,6 +31,12 @@ type Props = {
 export default function CaseStudy({ project, onClose, onChange }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const snapshotRef = useRef<ScrollSnapshot | null>(null);
+  // One history entry per open, whatever route the reader leaves by.
+  const { dismiss } = useOverlayHistory(
+    Boolean(project),
+    project ? { kind: "case-study", slug: project.slug } : null,
+    onClose,
+  );
 
   // Remember where the visitor was, then put them back there once the overlay
   // has gone. This effect is declared before useBodyLock so the capture still
@@ -70,7 +78,11 @@ export default function CaseStudy({ project, onClose, onChange }: Props) {
     if (!project) return;
     closeRef.current?.focus();
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key !== "Escape") return;
+      // The contact card can sit above this study; Escape belongs to the top
+      // layer only, so one press never closes two views.
+      if (!isTopOverlay({ kind: "case-study", slug: project.slug })) return;
+      dismiss();
     };
     window.addEventListener("keydown", onKey);
     document.documentElement.style.overflow = "hidden";
@@ -78,7 +90,7 @@ export default function CaseStudy({ project, onClose, onChange }: Props) {
       window.removeEventListener("keydown", onKey);
       document.documentElement.style.overflow = "";
     };
-  }, [project, onClose]);
+  }, [project, dismiss]);
 
   const index = project ? projects.findIndex((item) => item.slug === project.slug) : -1;
   const next = index >= 0 ? projects[(index + 1) % projects.length] : null;
@@ -129,10 +141,11 @@ export default function CaseStudy({ project, onClose, onChange }: Props) {
                   )}
                   <button
                     ref={closeRef}
-                    onClick={onClose}
-                    className="border border-line px-3 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-bone transition-colors hover:border-gold hover:text-gold"
+                    onClick={dismiss}
+                    aria-label="Close case study"
+                    className={closeButtonClass}
                   >
-                    Close ✕
+                    Close <span aria-hidden>✕</span>
                   </button>
                 </div>
               </div>

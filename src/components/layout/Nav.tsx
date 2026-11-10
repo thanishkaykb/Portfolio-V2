@@ -20,7 +20,7 @@ const links = [
   { id: "contact", label: "Contact" },
 ];
 
-export default function Nav({ onResume }: { onResume: () => void }) {
+export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -124,12 +124,14 @@ export default function Nav({ onResume }: { onResume: () => void }) {
                 </span>
               </span>
 
-              <button
-                onClick={onResume}
+              {/* The résumé is a file, not a panel: the click downloads the PDF. */}
+              <a
+                href={profile.resumePath}
+                download="Thanishka-Yogesh-Resume.pdf"
                 className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap border border-gold bg-gold px-2.5 py-2 font-mono text-[9px] uppercase tracking-[0.18em] text-ink transition-colors duration-300 hover:bg-gold/85 sm:px-3.5 sm:text-[10px]"
               >
-                Resume <span aria-hidden>↗</span>
-              </button>
+                Resume <span aria-hidden>↓</span>
+              </a>
 
               <button
                 onClick={() => setMenuOpen((value) => !value)}
