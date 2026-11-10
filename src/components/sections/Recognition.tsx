@@ -13,7 +13,7 @@ export default function Recognition() {
               <>
                 Honours and
                 <br />
-                <span className="text-gold">certificates.</span>
+                <span className="text-gold">certificates</span><span aria-hidden="true">.</span>
               </>
             }
           />

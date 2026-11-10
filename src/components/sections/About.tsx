@@ -86,7 +86,7 @@ export default function About() {
                 <>
                   A developer who likes
                   <br />
-                  <span className="text-gold">the whole picture.</span>
+                  <span className="text-gold">the whole picture</span><span aria-hidden="true">.</span>
                 </>
               }
             />

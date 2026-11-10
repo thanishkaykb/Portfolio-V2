@@ -70,7 +70,7 @@ export default function Story() {
               <>
                 Let&apos;s go back
                 <br />
-                <span className="text-gold">in time.</span>
+                <span className="text-gold">in time</span><span aria-hidden="true">.</span>
               </>
             }
           />

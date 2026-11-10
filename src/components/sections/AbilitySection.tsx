@@ -18,7 +18,7 @@ export default function AbilitySection() {
                 <>
                   A year of building,
                   <br />
-                  <span className="text-gold">in one card.</span>
+                  <span className="text-gold">in one card</span><span aria-hidden="true">.</span>
                 </>
               }
               sub={`Every gold square is a real commit, pull request or review. ${gh.total.toLocaleString("en-US")} contributions across ${gh.activeDays} active days in the last twelve months, pulled from GitHub's own calendar, not typed by hand.`}

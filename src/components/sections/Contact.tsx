@@ -61,7 +61,7 @@ export default function Contact() {
         <h2 className="display mt-6 max-w-4xl text-[clamp(2.5rem,6.4vw,5rem)] normal-case leading-[1.02] text-bone">
           Need something built?
           <br />
-          <span className="text-gold">Let&apos;s make it happen.</span>
+          <span className="text-gold">Let&apos;s make it happen</span><span aria-hidden="true">.</span>
         </h2>
 
         <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted md:text-base">

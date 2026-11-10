@@ -96,7 +96,7 @@ function renderMotif(motif: ArtworkMotif, sub?: string) {
             <p className="display text-[clamp(0.95rem,2.2vw,1.5rem)] leading-none text-bone">
               Silent voices,
               <br />
-              <span className="text-gold">seen.</span>
+              <span className="text-gold">seen</span><span aria-hidden="true">.</span>
             </p>
             <span className="font-mono text-[7px] uppercase tracking-[0.18em] text-gold/70">
               live

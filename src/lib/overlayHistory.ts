@@ -22,7 +22,9 @@ import { useCallback, useEffect, useRef } from "react";
 export type OverlayRef =
   | { kind: "door"; id: string }
   | { kind: "case-study"; slug: string }
-  | { kind: "contact" };
+  | { kind: "contact" }
+  | { kind: "writing-clipping"; id: string }
+  | { kind: "writing-poem"; id: string };
 
 type HistoryState = { __pfOverlay?: OverlayRef; __pfDepth?: number } | null;
 

@@ -28,7 +28,7 @@ export function EventsShowcase() {
             <>
               Rooms I help
               <br />
-              <span className="text-gold">run.</span>
+              <span className="text-gold">run</span><span aria-hidden="true">.</span>
             </>
           }
         />

@@ -25,6 +25,32 @@ import { EventsShowcase } from "./Events";
 
 const DoorScene = lazy(() => import("../three/DoorScene"));
 
+function DoorTitleText({ door }: { door: { title: string } }) {
+  const raw = door.title.trim();
+  // Detect existing trailing punctuation.
+  const hasTrail = /[.!?]$/.test(raw);
+  // Work only on the leading/trailing whitespace-stripped core.
+  const core = raw.replace(/[.!?]$/, "");
+  const pieces = core.split(/(\s+)/);
+  // The last non-whitespace token is the last visible word.
+  const nonSpaceTokens = pieces.filter((p) => p.trim().length > 0);
+  const lastWord = nonSpaceTokens.length > 0 ? nonSpaceTokens[nonSpaceTokens.length - 1] : "";
+
+  // Reconstruct with whitespace preserved in the "before" part, then last word wrapped.
+  const beforeWithSpaces = pieces.slice(0, -1).join("").trimEnd();
+  // The trailing whitespace between last word and end (if any) should be dropped, since we append the mark.
+  const leadingPart = beforeWithSpaces; // includes any internal spaces before last word
+  const mark = hasTrail ? "" : ".";
+  return (
+    <>
+      {leadingPart}
+      {lastWord ? <span className="text-gold">{lastWord}</span> : ""}
+      <span aria-hidden="true">{mark}</span>
+    </>
+  );
+}
+
+
 export default function DoorWorld() {
   const [opened, setOpened] = useState<number | null>(null);
   const [expanding, setExpanding] = useState<number | null>(null);
@@ -230,7 +256,9 @@ export default function DoorWorld() {
           )}
         >
           <span className="font-mono text-[10px] text-gold">{door.index}</span>
-          <span className="mt-6 display text-2xl text-bone">{door.title}</span>
+          <span className="mt-6 display text-2xl text-bone">
+            <DoorTitleText door={door} />
+          </span>
           <span className="mt-2 text-xs text-muted">{door.short}</span>
         </button>
       ))}
@@ -248,7 +276,7 @@ export default function DoorWorld() {
               <>
                 My work, one door
                 <br />
-                <span className="text-gold">per skill</span>
+                <span className="text-gold">per skill</span><span aria-hidden="true">.</span>
               </>
             }
           />

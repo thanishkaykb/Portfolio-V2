@@ -39,7 +39,7 @@ export function ProjectsShowcase({ onWorkWithMe, showCta = true }: Props) {
             <>
               Built, shipped,
               <br />
-              <span className="text-gold">documented.</span>
+              <span className="text-gold">documented</span><span aria-hidden="true">.</span>
             </>
           }
         />

@@ -34,7 +34,7 @@ export function WebWorkShowcase() {
           <>
             The web is
             <br />
-            <span className="text-gold">the medium.</span>
+            <span className="text-gold">the medium</span><span aria-hidden="true">.</span>
           </>
         }
         sub="Websites are my primary craft: responsive interfaces wired to real data, built with React, TypeScript and Tailwind, then shipped."

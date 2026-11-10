@@ -51,7 +51,7 @@ export default function Cursor() {
     const setGrown = (next: boolean) => {
       if (next === grown) return;
       grown = next;
-      innerEl.style.transform = next ? "scale(2.35)" : "scale(1)";
+      innerEl.style.transform = "scale(1)";
       ringEl.style.opacity = "1";
     };
 

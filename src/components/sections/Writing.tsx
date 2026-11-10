@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   anthologies,
   artAccount,
@@ -8,7 +10,13 @@ import {
   pressClippings,
 } from "../../lib/data";
 import SectionHeading from "../ui/SectionHeading";
-import { cn } from "../../lib/hooks";
+import { cn, useBodyLock } from "../../lib/hooks";
+import { closeIconButtonClass } from "../../lib/closeButton";
+import {
+  isTopOverlay,
+  useOverlayHistory,
+  useOverlayReopen,
+} from "../../lib/overlayHistory";
 
 const facts = [
   { value: "02", label: "Anthologies in print" },
@@ -17,7 +25,11 @@ const facts = [
 ];
 
 /** Horizontal clippings rail with visible arrows so nobody misses the rest. */
-function PressStrip() {
+function PressStrip({
+  onClippingOpen,
+}: {
+  onClippingOpen: (src: string, title: string, meta: string) => void;
+}) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [edges, setEdges] = useState({ start: true, end: false });
 
@@ -51,11 +63,10 @@ function PressStrip() {
         className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0"
       >
         {pressClippings.map((clipping) => (
-          <a
+          <button
             key={clipping.src}
-            href={clipping.href}
-            target="_blank"
-            rel="noreferrer noopener"
+            type="button"
+            onClick={() => onClippingOpen(clipping.src, clipping.title, clipping.meta)}
             className="group w-[70%] max-w-[240px] shrink-0 snap-start border border-line bg-ink-2 transition-colors hover:border-gold/60 sm:w-[42%] md:w-[30%]"
           >
             <div className="overflow-hidden border-b border-line">
@@ -74,7 +85,7 @@ function PressStrip() {
                 {clipping.meta}
               </p>
             </div>
-          </a>
+          </button>
         ))}
       </div>
 
@@ -117,9 +128,259 @@ function PressStrip() {
   );
 }
 
+/** A single newspaper clipping opened in place, not a new page. */
+function PressClippingDialog({
+  src,
+  title,
+  meta,
+  onDismiss,
+}: {
+  src: string;
+  title: string;
+  meta: string;
+  onDismiss: () => void;
+}) {
+  return createPortal(
+    <AnimatePresence>
+      <motion.div
+        key="clipping-dialog"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.22 }}
+        onClick={onDismiss}
+        className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-ink/88 p-4 backdrop-blur-xl"
+      >
+        <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="clipping-title"
+          initial={{ y: 20, opacity: 0, scale: 0.96 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          exit={{ y: 12, opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          onClick={(event) => event.stopPropagation()}
+          className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-4 sm:p-6 shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto"
+        >
+          <button
+            onClick={onDismiss}
+            aria-label="Close newspaper clipping"
+            className={closeIconButtonClass}
+          >
+            ✕
+          </button>
+
+          <div className="overflow-y-auto max-h-[80vh] rounded-lg border border-line bg-ink/60 scroll-smooth">
+            <img
+              src={src}
+              alt={`${title}, printed in The Times of India`}
+              className={cn(
+                "w-full h-auto border border-line",
+                title === "Canvas & Verses."
+                  ? "max-w-[240px] sm:max-w-[260px]"
+                  : title === "The Final Bell Rings."
+                  ? "max-w-[240px] sm:max-w-[260px]"
+                  : "",
+              )}
+            />
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <p
+              id="clipping-title"
+              className="text-xl font-semibold leading-tight text-bone sm:text-2xl"
+            >
+              {title}
+              <span className="text-gold ml-1" aria-hidden="true">.</span>
+            </p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              {meta}
+            </p>
+          </div>
+
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-gold">
+            Printed in the school pages of The Times of India
+            <span aria-hidden="true">.</span>
+          </p>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>,
+    document.body,
+  );
+}
+
+/** One poem from the collection opened in place.
+ * If the full text is already in the site, show it here; otherwise embed the
+ * Google Drive PDF inside this card so the reader never leaves the page.
+ */
+function PoemDialog({
+  number,
+  title,
+  href,
+  text,
+  onDismiss,
+  drivePoems,
+  setPoemOpen,
+}: {
+  number: number;
+  title: string;
+  href: string;
+  text?: string;
+  onDismiss: () => void;
+  drivePoems: { n: number; title: string; href: string }[];
+  setPoemOpen: (n: number | null) => void;
+}) {
+  const fileId = href.match(/\/d\/([A-Za-z0-9_-]+)/)?.[1];
+  const embedHref = fileId
+    ? `https://drive.google.com/file/d/${fileId}/preview`
+    : href;
+
+  return createPortal(
+    <AnimatePresence>
+      <motion.div
+        key={`poem-${number}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.22 }}
+        onClick={onDismiss}
+        className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-ink/88 p-4 backdrop-blur-xl"
+      >
+        <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="poem-title"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 12, opacity: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          onClick={(event) => event.stopPropagation()}
+          className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-5 sm:p-7 shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-baseline gap-3">
+              <span className="font-mono text-[10px] tracking-[0.18em] text-muted/70">
+                {String(number).padStart(2, "0")}
+              </span>
+              <p
+                id="poem-title"
+                className="text-xl font-semibold leading-tight text-bone sm:text-2xl"
+              >
+                {title}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const prev = drivePoems.find((p) => p.n === (number - 1));
+                  if (prev) setPoemOpen(prev.n);
+                }}
+                aria-label="Previous poem"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-ink/90 text-gold transition-colors hover:bg-gold hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = drivePoems.find((p) => p.n === (number + 1));
+                  if (next) setPoemOpen(next.n);
+                }}
+                aria-label="Next poem"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-ink/90 text-gold transition-colors hover:bg-gold hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                →
+              </button>
+              <button
+                type="button"
+                onClick={onDismiss}
+                aria-label="Close poem"
+                className={closeIconButtonClass}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          {text ? (          <div className="mt-5 scroll-smooth">
+            <pre
+              className="whitespace-pre-wrap text-[15px] leading-relaxed text-bone/85"
+              aria-label={`${title} poem text`}
+            >
+              {text}
+            </pre>
+            <p className="mt-4 text-xs leading-relaxed text-muted">
+              The full PDF is also available on Google Drive; this card already shows the poem,
+              so you do not need to open another page.
+            </p>
+          </div>
+          ) : (
+            <div className="mt-5 scroll-smooth">
+              <iframe
+                src={embedHref}
+                title={`Poem ${number}: ${title} on Google Drive`}
+                className="w-full rounded border border-line"
+                style={{ height: "80vh", border: "0" }}
+                loading="lazy"
+              />
+              <a
+                href={href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="mt-3 inline-flex items-center gap-2 border border-line px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-gold hover:text-gold"
+              >
+                Open on Google Drive ↗
+              </a>
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>,
+    document.body,
+  );
+}
+
 /** The writing and art half of the Creative Development door. */
 export function PoetryShowcase() {
   const [open, setOpen] = useState<string | null>(null);
+  const [clippingOpen, setClippingOpen] = useState<string | null>(null);
+  const [poemOpen, setPoemOpen] = useState<number | null>(null);
+
+  useBodyLock(clippingOpen != null || poemOpen != null);
+
+  const { dismiss: dismissClipping } = useOverlayHistory(
+    clippingOpen != null,
+    clippingOpen ? { kind: "writing-clipping", id: clippingOpen } : null,
+    () => setClippingOpen(null),
+  );
+  const { dismiss: dismissPoem } = useOverlayHistory(
+    poemOpen != null,
+    poemOpen ? { kind: "writing-poem", id: String(poemOpen) } : null,
+    () => setPoemOpen(null),
+  );
+
+  // Forward navigation can bring either card back.
+  useOverlayReopen((ref) => {
+    if (ref.kind === "writing-clipping" && ref.id) setClippingOpen(ref.id);
+    if (ref.kind === "writing-poem") setPoemOpen(Number(ref.id));
+  });
+
+  useEffect(() => {
+    if (!clippingOpen && !poemOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (clippingOpen && isTopOverlay({ kind: "writing-clipping", id: clippingOpen })) {
+        dismissClipping();
+        return;
+      }
+      if (poemOpen != null && isTopOverlay({ kind: "writing-poem", id: String(poemOpen) })) {
+        dismissPoem();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [clippingOpen, poemOpen, dismissClipping, dismissPoem]);
 
   return (
     <div>
@@ -129,7 +390,7 @@ export function PoetryShowcase() {
           <>
             Words, before
             <br />
-            <span className="text-gold">the browser.</span>
+            <span className="text-gold">the browser</span><span aria-hidden="true">.</span>
           </>
         }
         sub="I am a published anthology poet: two collections with Writer's Pocket, a 42 poem collection of my own, and six poems printed in The Times of India."
@@ -204,7 +465,7 @@ export function PoetryShowcase() {
       <div className="mt-12 border-t border-line pt-6">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="display text-2xl text-bone">
-            In the newspaper<span className="text-gold">.</span>
+            In the <span className="text-gold">newspaper</span><span aria-hidden="true">.</span>
           </h3>
           <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted">
             Six pages · local archive
@@ -215,13 +476,15 @@ export function PoetryShowcase() {
           Express Y. Tap a page to read the clipping.
         </p>
 
-        <PressStrip />
+        <PressStrip
+          onClippingOpen={(src, title, meta) => setClippingOpen(`${src}?${title}?${meta}`)}
+        />
       </div>
 
       {/* the poems themselves, readable in place */}
       <div className="mt-12 border-t border-line pt-6">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="display text-2xl text-bone">Poems</h3>
+          <h3 className="display text-2xl text-bone"><span className="text-gold">Poems</span><span aria-hidden="true">.</span></h3>
           <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-gold">
             Published on PoetrySoup · tap to read
           </p>
@@ -293,11 +556,10 @@ export function PoetryShowcase() {
           <ol className="mt-4 grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
             {drivePoems.map((poem) => (
               <li key={poem.n} className="border-t border-line/70">
-                <a
-                  href={poem.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="group flex items-baseline gap-3 py-2 transition-colors hover:text-gold"
+                <button
+                  type="button"
+                  onClick={() => setPoemOpen(poem.n)}
+                  className="group flex w-full items-baseline gap-3 py-2 transition-colors hover:text-gold"
                 >
                   <span className="w-6 shrink-0 font-mono text-[9px] tracking-[0.12em] text-muted/70">
                     {String(poem.n).padStart(2, "0")}
@@ -309,9 +571,9 @@ export function PoetryShowcase() {
                     aria-hidden
                     className="shrink-0 font-mono text-[10px] text-muted/60 group-hover:text-gold"
                   >
-                    ↗
+                    ▶
                   </span>
-                </a>
+                </button>
               </li>
             ))}
           </ol>
@@ -323,7 +585,7 @@ export function PoetryShowcase() {
         <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-gold">Art</p>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
           <p className="display text-[clamp(1.5rem,3.6vw,2rem)] leading-none text-bone">
-            Drawings and colour.
+            Drawings and <span className="text-gold">colour</span><span aria-hidden="true">.</span>
           </p>
           <a
             href={artAccount.href}
@@ -365,6 +627,37 @@ export function PoetryShowcase() {
           </a>
         </div>
       </div>
+
+      {/* newspaper clipping in a dialog */}
+      <AnimatePresence>
+        {clippingOpen && (
+          <PressClippingDialog
+            key={clippingOpen}
+            src={clippingOpen.split("?")[0]}
+            title={clippingOpen.split("?")[1] ?? ""}
+            meta={clippingOpen.split("?")[2] ?? ""}
+            onDismiss={dismissClipping}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* poem from the collection, in place */}
+      <AnimatePresence>
+        {poemOpen != null && (
+          <PoemDialog
+            key={`poem-${poemOpen}`}
+            number={poemOpen}
+            title={drivePoems.find((p) => p.n === poemOpen)?.title ?? ""}
+            href={drivePoems.find((p) => p.n === poemOpen)?.href ?? ""}
+            text={poems.find((p) =>
+              drivePoems.some((dp) => dp.n === poemOpen && dp.title === p.title
+              ))?.text}
+            onDismiss={dismissPoem}
+            drivePoems={drivePoems}
+            setPoemOpen={setPoemOpen}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
