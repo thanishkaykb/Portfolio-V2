@@ -1,4 +1,4 @@
-import { profile } from "../../lib/data";
+import { emailComposeUrl, profile } from "../../lib/data";
 import { openDoor } from "../../lib/doors";
 import { scrollToSection, scrollToTop, useChennaiTime } from "../../lib/hooks";
 
@@ -29,7 +29,9 @@ export default function Footer() {
               Chennai. Currently open to internships, collaborations and interesting problems.
             </p>
             <a
-              href={`mailto:${profile.email}`}
+              href={emailComposeUrl}
+              target="_blank"
+              rel="noreferrer noopener"
               className="link-underline mt-6 inline-block text-lg text-bone transition-colors hover:text-gold"
             >
               {profile.email}
@@ -66,7 +68,7 @@ export default function Footer() {
                 { label: "GitHub", href: profile.github },
                 { label: "LinkedIn", href: profile.linkedin },
                 { label: "Previous portfolio", href: profile.previousPortfolio },
-                { label: "Email", href: `mailto:${profile.email}` },
+                { label: "Email", href: emailComposeUrl },
               ].map((item) => (
                 <li key={item.label}>
                   <a

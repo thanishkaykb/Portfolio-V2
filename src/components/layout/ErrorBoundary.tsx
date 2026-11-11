@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
-import { profile } from "../../lib/data";
+import { emailComposeUrl, profile } from "../../lib/data";
 import { reportClientError } from "../../lib/reportClientError";
 
 type Props = {
@@ -49,7 +49,9 @@ export default class ErrorBoundary extends Component<Props, State> {
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <a
-            href={`mailto:${profile.email}`}
+            href={emailComposeUrl}
+            target="_blank"
+            rel="noreferrer noopener"
             className="bg-gold px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink"
           >
             Email me ↗

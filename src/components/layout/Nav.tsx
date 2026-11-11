@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { profile } from "../../lib/data";
+import { emailComposeUrl, profile } from "../../lib/data";
 import { openDoor } from "../../lib/doors";
 import {
   cn,
@@ -210,7 +210,9 @@ export default function Nav() {
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <a
-                  href={`mailto:${profile.email}`}
+                  href={emailComposeUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
                   className="border border-line px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-bone"
                 >
                   Email

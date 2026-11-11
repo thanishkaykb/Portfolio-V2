@@ -34,6 +34,11 @@ export const profile = {
   languages: ["Tamil", "Telugu", "English", "Hindi"],
 } as const;
 
+/** Opens Gmail's compose window with the address already filled in. */
+export const emailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+  profile.email,
+)}`;
+
 export type DoorCategory = {
   id: string;
   index: string;
