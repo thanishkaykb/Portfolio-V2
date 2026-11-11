@@ -57,6 +57,28 @@ function PressStrip({
     el.scrollBy({ left: direction * Math.max(240, el.clientWidth * 0.8), behavior: "smooth" });
   };
 
+  // One arrow, two placements: over the strip on wider screens, and small in the
+  // caption row on phones so it never sits on top of a clipping.
+  const arrow = (direction: 1 | -1, className: string) => {
+    const atEdge = direction === -1 ? edges.start : edges.end;
+    return (
+      <button
+        type="button"
+        onClick={() => nudge(direction)}
+        aria-label={
+          direction === -1 ? "Previous newspaper clippings" : "Next newspaper clippings"
+        }
+        className={cn(
+          "z-10 grid shrink-0 place-items-center rounded-full border border-gold/40 bg-ink/90 text-gold backdrop-blur transition-opacity duration-300",
+          className,
+          atEdge ? "pointer-events-none opacity-0" : "opacity-100",
+        )}
+      >
+        {direction === -1 ? "←" : "→"}
+      </button>
+    );
+  };
+
   return (
     <div className="relative mt-5">
       <div
@@ -90,41 +112,33 @@ function PressStrip({
         ))}
       </div>
 
+      {/* Both fades reach the strip's own edge (it is full-bleed on phones), so
+          they read as the page darkening rather than a panel laid on top. */}
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-ink to-transparent transition-opacity duration-300",
+          "pointer-events-none absolute inset-y-0 -left-4 w-14 bg-gradient-to-r from-ink to-transparent transition-opacity duration-300 sm:left-0",
+          edges.start && "opacity-0",
+        )}
+      />
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-y-0 -right-4 w-14 bg-gradient-to-l from-ink to-transparent transition-opacity duration-300 sm:right-0",
           edges.end && "opacity-0",
         )}
       />
 
-      <button
-        type="button"
-        onClick={() => nudge(-1)}
-        aria-label="Previous newspaper clippings"
-        className={cn(
-          "absolute left-1 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-gold/40 bg-ink/90 text-gold backdrop-blur transition-opacity duration-300",
-          edges.start ? "pointer-events-none opacity-0" : "opacity-100",
-        )}
-      >
-        ←
-      </button>
+      {arrow(-1, "absolute left-1 top-1/2 hidden h-9 w-9 -translate-y-1/2 text-sm sm:grid")}
+      {arrow(1, "absolute right-1 top-1/2 hidden h-9 w-9 -translate-y-1/2 text-sm sm:grid")}
 
-      <button
-        type="button"
-        onClick={() => nudge(1)}
-        aria-label="Next newspaper clippings"
-        className={cn(
-          "absolute right-1 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-gold/40 bg-ink/90 text-gold backdrop-blur transition-opacity duration-300",
-          edges.end ? "pointer-events-none opacity-0" : "opacity-100",
-        )}
-      >
-        →
-      </button>
-
-      <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-gold/80">
-        {edges.end ? "End of the six pages" : "Swipe or scroll for more pages →"}
-      </p>
+      <div className="mt-2 flex items-center justify-between gap-3">
+        {arrow(-1, "h-7 w-7 text-[11px] sm:hidden")}
+        <p className="min-w-0 flex-1 text-center font-mono text-[9px] uppercase tracking-[0.18em] text-gold/80 sm:text-left">
+          {edges.end ? "End of the six pages" : "Swipe or scroll for more pages →"}
+        </p>
+        {arrow(1, "h-7 w-7 text-[11px] sm:hidden")}
+      </div>
     </div>
   );
 }
@@ -220,123 +234,159 @@ function PoemDialog({
   title,
   href,
   text,
+  direction,
   onDismiss,
   drivePoems,
   setPoemOpen,
+  setDirection,
 }: {
   number: number;
   title: string;
   href: string;
   text?: string;
+  direction: number;
   onDismiss: () => void;
   drivePoems: { n: number; title: string; href: string }[];
   setPoemOpen: (n: number | null) => void;
+  setDirection: (d: number) => void;
 }) {
   const fileId = href.match(/\/d\/([A-Za-z0-9_-]+)/)?.[1];
   const embedHref = fileId
     ? `https://drive.google.com/file/d/${fileId}/preview`
     : href;
 
-  return createPortal(
-    <AnimatePresence>
-      <motion.div
-        key={`poem-${number}`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.22 }}
-        onClick={onDismiss}
-        data-lenis-prevent
-        className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-ink/88 p-4 backdrop-blur-xl"
-      >
-        <motion.div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="poem-title"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 12, opacity: 0 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          onClick={(event) => event.stopPropagation()}
-          className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-5 sm:max-w-md sm:p-7 md:max-w-xl lg:max-w-2xl xl:max-w-3xl shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto overscroll-contain scroll-smooth [touch-action:pan-y]"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-baseline gap-3">
-              <span className="font-mono text-[10px] tracking-[0.18em] text-muted/70">
-                {String(number).padStart(2, "0")}
-              </span>
-              <p
-                id="poem-title"
-                className="text-xl font-semibold leading-tight text-bone sm:text-2xl"
-              >
-                {title}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  const prev = drivePoems.find((p) => p.n === (number - 1));
-                  if (prev) setPoemOpen(prev.n);
-                }}
-                aria-label="Previous poem"
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-ink/90 text-gold transition-colors hover:bg-gold hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                ←
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const next = drivePoems.find((p) => p.n === (number + 1));
-                  if (next) setPoemOpen(next.n);
-                }}
-                aria-label="Next poem"
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-ink/90 text-gold transition-colors hover:bg-gold hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                →
-              </button>
-              <button
-                type="button"
-                onClick={onDismiss}
-                aria-label="Close poem"
-                className={closeIconButtonClass}
-              >
-                ✕
-              </button>
-            </div>
-          </div>
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const prev = drivePoems.find((p) => p.n === number - 1);
+  const next = drivePoems.find((p) => p.n === number + 1);
+  const shift = direction < 0 ? -18 : 18;
 
-          {text ? (
-            <div className="mt-5">
+  // A new poem opens at the top of the card, never where the last one was left.
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [number]);
+
+  const go = (target: number) => {
+    setDirection(target < number ? -1 : 1);
+    setPoemOpen(target);
+  };
+
+  // The card, backdrop and arrows stay mounted while only the poem swaps, so
+  // stepping through the collection is one quick slide instead of a remount.
+  return createPortal(
+    <motion.div
+      key="poem-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onDismiss}
+      data-lenis-prevent
+      className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-ink/88 p-4 backdrop-blur-xl"
+    >
+      <motion.div
+        ref={scrollRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="poem-title"
+        initial={{ y: 18, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 10, opacity: 0 }}
+        transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+        onClick={(event) => event.stopPropagation()}
+        className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-5 sm:max-w-md sm:p-7 md:max-w-xl lg:max-w-2xl xl:max-w-3xl shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto overscroll-contain [touch-action:pan-y]"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 flex-1 items-baseline overflow-hidden">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={number}
+                initial={{ opacity: 0, x: shift }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -shift }}
+                transition={{ duration: 0.14, ease: [0.22, 1, 0.36, 1] }}
+                className="flex min-w-0 flex-wrap items-baseline gap-x-3"
+              >
+                <span className="font-mono text-[10px] tracking-[0.18em] text-muted/70">
+                  {String(number).padStart(2, "0")}
+                </span>
+                <p
+                  id="poem-title"
+                  className="text-xl font-semibold leading-tight text-bone sm:text-2xl"
+                >
+                  {title}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => prev && go(prev.n)}
+              disabled={!prev}
+              aria-label="Previous poem"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-ink/90 text-gold transition-colors hover:bg-gold hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              onClick={() => next && go(next.n)}
+              disabled={!next}
+              aria-label="Next poem"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-ink/90 text-gold transition-colors hover:bg-gold hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              →
+            </button>
+            <button
+              type="button"
+              onClick={onDismiss}
+              aria-label="Close poem"
+              className={closeIconButtonClass}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={number}
+            initial={{ opacity: 0, x: shift }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -shift }}
+            transition={{ duration: 0.14, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-5"
+          >
+            {text ? (
               <pre
                 className="whitespace-pre-wrap text-[15px] leading-[1.9] text-bone/90"
                 aria-label={`${title} poem text`}
               >
                 {text}
               </pre>
-            </div>
-          ) : (
-            <div className="mt-5 scroll-smooth">
-              <iframe
-                src={embedHref}
-                title={`Poem ${number}: ${title} on Google Drive`}
-                className="w-full rounded border border-line"
-                style={{ height: "80vh", border: "0" }}
-                loading="lazy"
-              />
-              <a
-                href={href}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="mt-3 inline-flex items-center gap-2 border border-line px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-gold hover:text-gold"
-              >
-                Open on Google Drive ↗
-              </a>
-            </div>
-          )}
-        </motion.div>
+            ) : (
+              <div>
+                <iframe
+                  src={embedHref}
+                  title={`Poem ${number}: ${title} on Google Drive`}
+                  className="w-full rounded border border-line"
+                  style={{ height: "80vh", border: "0" }}
+                  loading="lazy"
+                />
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="mt-3 inline-flex items-center gap-2 border border-line px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-gold hover:text-gold"
+                >
+                  Open on Google Drive ↗
+                </a>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </motion.div>
-    </AnimatePresence>,
+    </motion.div>,
     document.body,
   );
 }
@@ -345,6 +395,7 @@ function PoemDialog({
 export function PoetryShowcase() {
   const [clippingOpen, setClippingOpen] = useState<string | null>(null);
   const [poemOpen, setPoemOpen] = useState<number | null>(null);
+  const [poemDir, setPoemDir] = useState(0);
 
   useBodyLock(clippingOpen != null || poemOpen != null);
 
@@ -362,7 +413,10 @@ export function PoetryShowcase() {
   // Forward navigation can bring either card back.
   useOverlayReopen((ref) => {
     if (ref.kind === "writing-clipping" && ref.id) setClippingOpen(ref.id);
-    if (ref.kind === "writing-poem") setPoemOpen(Number(ref.id));
+    if (ref.kind === "writing-poem") {
+      setPoemDir(0);
+      setPoemOpen(Number(ref.id));
+    }
   });
 
   useEffect(() => {
@@ -471,7 +525,7 @@ export function PoetryShowcase() {
           </p>
         </div>
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
-          The Times of India printed my poems in its school pages six times, under Dare to Dream,
+          The Times of India printed my poems in its school pages six times, under Artistry Corner,
           Express Your Thoughts and Canvas &amp; Verses. Tap a page to read the clipping.
         </p>
 
@@ -533,7 +587,10 @@ export function PoetryShowcase() {
               <li key={poem.n} className="border-t border-line/70">
                 <button
                   type="button"
-                  onClick={() => setPoemOpen(poem.n)}
+                  onClick={() => {
+                    setPoemDir(0);
+                    setPoemOpen(poem.n);
+                  }}
                   className="group flex w-full items-baseline gap-3 py-2 transition-colors hover:text-gold"
                 >
                   <span className="w-6 shrink-0 font-mono text-[9px] tracking-[0.12em] text-muted/70">
@@ -620,7 +677,6 @@ export function PoetryShowcase() {
       <AnimatePresence>
         {poemOpen != null && (
           <PoemDialog
-            key={`poem-${poemOpen}`}
             number={poemOpen}
             title={drivePoems.find((p) => p.n === poemOpen)?.title ?? ""}
             href={drivePoems.find((p) => p.n === poemOpen)?.href ?? ""}
@@ -632,6 +688,8 @@ export function PoetryShowcase() {
             }
             onDismiss={dismissPoem}
             drivePoems={drivePoems}
+            direction={poemDir}
+            setDirection={setPoemDir}
             setPoemOpen={setPoemOpen}
           />
         )}

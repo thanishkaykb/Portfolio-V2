@@ -1055,34 +1055,44 @@ export const certifications = [
 
 export type PressClipping = { src: string; title: string; meta: string; href: string };
 
-/** Times of India school pages that printed the poems. */
+/** Times of India school pages that printed the poems, oldest first. */
 export const pressClippings: PressClipping[] = [
-  { src: "/writing/press/press-1.jpg",
-    href: "/writing/press/press-1.jpg", title: "Moon", meta: "Dare to Dream · 17 March 2025" },
-  { src: "/writing/press/press-2.jpg",
+  {
+    src: "/writing/press/press-2.jpg",
     href: "/writing/press/press-2.jpg",
     title: "Footprints",
-    meta: "Express Your Thoughts · 30 August 2024" },
-  {
-    src: "/writing/press/press-3.jpg",
-    href: "/writing/press/press-3.jpg",
-    title: "The Final Bell Rings",
-    meta: "Canvas & Verses · 20 February 2025",
+    meta: "Express Your Thoughts · 30 August 2024",
   },
-  { src: "/writing/press/press-4.jpg",
-    href: "/writing/press/press-4.jpg",
-    title: "Colours!",
-    meta: "Express Your Thoughts · 8 January 2025" },
   {
     src: "/writing/press/press-5.jpg",
     href: "/writing/press/press-5.jpg",
     title: "Palette of Potential",
     meta: "Express Your Thoughts · 26 September 2024",
   },
-  { src: "/writing/press/press-6.jpg",
+  {
+    src: "/writing/press/press-4.jpg",
+    href: "/writing/press/press-4.jpg",
+    title: "Colours!",
+    meta: "Express Your Thoughts · 8 January 2025",
+  },
+  {
+    src: "/writing/press/press-6.jpg",
     href: "/writing/press/press-6.jpg",
     title: "Colours!",
-    meta: "Express Your Thoughts · 22 January 2025" },
+    meta: "Express Your Thoughts · 22 January 2025",
+  },
+  {
+    src: "/writing/press/press-3.jpg",
+    href: "/writing/press/press-3.jpg",
+    title: "The Final Bell Rings",
+    meta: "Canvas & Verses · 20 February 2025",
+  },
+  {
+    src: "/writing/press/press-1.jpg",
+    href: "/writing/press/press-1.jpg",
+    title: "Moon",
+    meta: "Artistry Corner · 17 March 2025",
+  },
 ];
 
 export type DrivePoem = { n: number; title: string; href: string };
