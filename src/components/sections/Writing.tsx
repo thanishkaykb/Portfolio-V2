@@ -12,6 +12,7 @@ import {
 import SectionHeading from "../ui/SectionHeading";
 import { cn, useBodyLock } from "../../lib/hooks";
 import { closeIconButtonClass } from "../../lib/closeButton";
+import { poemTexts } from "../../lib/poemTexts";
 import {
   isTopOverlay,
   useOverlayHistory,
@@ -69,12 +70,12 @@ function PressStrip({
             onClick={() => onClippingOpen(clipping.src, clipping.title, clipping.meta)}
             className="group w-[70%] max-w-[240px] shrink-0 snap-start border border-line bg-ink-2 transition-colors hover:border-gold/60 sm:w-[42%] md:w-[30%]"
           >
-            <div className="overflow-hidden border-b border-line">
+            <div className="overflow-hidden border-b border-line bg-ink/60">
               <img
                 src={clipping.src}
                 alt={`${clipping.title}, printed in The Times of India`}
                 loading="lazy"
-                className="w-full transition-transform duration-700 group-hover:scale-[1.03]"
+                className="aspect-[1080/1876] w-full object-contain transition-transform duration-700 group-hover:scale-[1.03]"
               />
             </div>
             <div className="p-3">
@@ -149,7 +150,8 @@ function PressClippingDialog({
         exit={{ opacity: 0 }}
         transition={{ duration: 0.22 }}
         onClick={onDismiss}
-        className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-ink/88 p-4 backdrop-blur-xl"
+        data-lenis-prevent
+        className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-ink/88 p-4 backdrop-blur-xl"
       >
         <motion.div
           role="dialog"
@@ -160,7 +162,7 @@ function PressClippingDialog({
           exit={{ y: 12, opacity: 0, scale: 0.96 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           onClick={(event) => event.stopPropagation()}
-          className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-4 sm:p-6 shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto"
+          className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-4 sm:p-6 shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto overscroll-contain scroll-smooth [touch-action:pan-y]"
         >
           <button
             onClick={onDismiss}
@@ -170,7 +172,7 @@ function PressClippingDialog({
             ✕
           </button>
 
-          <div className="overflow-y-auto max-h-[80vh] rounded-lg border border-line bg-ink/60 scroll-smooth">
+          <div className="rounded-lg border border-line bg-ink/60">
             <img
               src={src}
               alt={`${title}, printed in The Times of India`}
@@ -244,7 +246,8 @@ function PoemDialog({
         exit={{ opacity: 0 }}
         transition={{ duration: 0.22 }}
         onClick={onDismiss}
-        className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-ink/88 p-4 backdrop-blur-xl"
+        data-lenis-prevent
+        className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-ink/88 p-4 backdrop-blur-xl"
       >
         <motion.div
           role="dialog"
@@ -255,7 +258,7 @@ function PoemDialog({
           exit={{ y: 12, opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           onClick={(event) => event.stopPropagation()}
-          className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-5 sm:p-7 shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto"
+          className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-5 sm:p-7 shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto overscroll-contain scroll-smooth [touch-action:pan-y]"
         >
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-baseline gap-3">
@@ -303,18 +306,15 @@ function PoemDialog({
             </div>
           </div>
 
-          {text ? (          <div className="mt-5 scroll-smooth">
-            <pre
-              className="whitespace-pre-wrap text-[15px] leading-relaxed text-bone/85"
-              aria-label={`${title} poem text`}
-            >
-              {text}
-            </pre>
-            <p className="mt-4 text-xs leading-relaxed text-muted">
-              The full PDF is also available on Google Drive; this card already shows the poem,
-              so you do not need to open another page.
-            </p>
-          </div>
+          {text ? (
+            <div className="mt-5">
+              <pre
+                className="whitespace-pre-wrap text-[15px] leading-[1.9] text-bone/90"
+                aria-label={`${title} poem text`}
+              >
+                {text}
+              </pre>
+            </div>
           ) : (
             <div className="mt-5 scroll-smooth">
               <iframe
@@ -343,7 +343,6 @@ function PoemDialog({
 
 /** The writing and art half of the Creative Development door. */
 export function PoetryShowcase() {
-  const [open, setOpen] = useState<string | null>(null);
   const [clippingOpen, setClippingOpen] = useState<string | null>(null);
   const [poemOpen, setPoemOpen] = useState<number | null>(null);
 
@@ -484,64 +483,40 @@ export function PoetryShowcase() {
       {/* the poems themselves, readable in place */}
       <div className="mt-12 border-t border-line pt-6">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="display text-2xl text-bone"><span className="text-gold">Poems</span><span aria-hidden="true">.</span></h3>
+          <h3 className="display text-2xl text-bone">
+            Verses &amp; <span className="text-gold">Voices</span><span aria-hidden="true">.</span>
+          </h3>
           <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-gold">
             Published on PoetrySoup · tap to read
           </p>
         </div>
 
         <ul className="mt-4">
-          {poems.map((poem) => {
-            const isOpen = open === poem.title;
-            return (
-              <li key={poem.title} className="border-b border-line">
-                <button
-                  onClick={() => setOpen(isOpen ? null : poem.title)}
-                  aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-4 py-3.5 text-left transition-colors hover:text-gold"
+          {poems.map((poem) => (
+            <li key={poem.title} className="border-b border-line">
+              <a
+                href={poem.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="group flex w-full items-center justify-between gap-4 py-3.5 text-left transition-colors hover:text-gold"
+              >
+                <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span className="text-[15px] text-bone transition-colors group-hover:text-gold md:text-base">
+                    {poem.title}
+                  </span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted">
+                    {poem.form} · {poem.date}
+                  </span>
+                </span>
+                <span
+                  aria-hidden
+                  className="shrink-0 font-mono text-[11px] text-muted transition-colors group-hover:text-gold"
                 >
-                  <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <span
-                      className={cn(
-                        "text-[15px] md:text-base",
-                        isOpen ? "text-gold" : "text-bone",
-                      )}
-                    >
-                      {poem.title}
-                    </span>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted">
-                      {poem.form} · {poem.date}
-                    </span>
-                  </span>
-                  <span
-                    className={cn(
-                      "shrink-0 font-mono text-sm text-muted transition-transform",
-                      isOpen && "rotate-45 text-gold",
-                    )}
-                    aria-hidden
-                  >
-                    +
-                  </span>
-                </button>
-
-                {isOpen && (
-                  <div className="pb-5">
-                    <p className="whitespace-pre-line text-[15px] leading-[1.85] text-bone/85 md:text-base">
-                      {poem.text}
-                    </p>
-                    <a
-                      href={poem.href}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className="mt-4 inline-flex items-center gap-2 border border-line px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-gold hover:text-gold"
-                    >
-                      Read on PoetrySoup ↗
-                    </a>
-                  </div>
-                )}
-              </li>
-            );
-          })}
+                  PoetrySoup ↗
+                </span>
+              </a>
+            </li>
+          ))}
         </ul>
 
         <div className="mt-8">
@@ -550,7 +525,7 @@ export function PoetryShowcase() {
               The full collection
             </p>
             <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">
-              42 poems · one PDF each
+              42 poems · tap to read
             </p>
           </div>
           <ol className="mt-4 grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -649,9 +624,12 @@ export function PoetryShowcase() {
             number={poemOpen}
             title={drivePoems.find((p) => p.n === poemOpen)?.title ?? ""}
             href={drivePoems.find((p) => p.n === poemOpen)?.href ?? ""}
-            text={poems.find((p) =>
-              drivePoems.some((dp) => dp.n === poemOpen && dp.title === p.title
-              ))?.text}
+            text={
+              poemTexts[poemOpen] ??
+              poems.find((p) =>
+                drivePoems.some((dp) => dp.n === poemOpen && dp.title === p.title),
+              )?.text
+            }
             onDismiss={dismissPoem}
             drivePoems={drivePoems}
             setPoemOpen={setPoemOpen}

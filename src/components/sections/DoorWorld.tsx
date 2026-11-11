@@ -11,6 +11,7 @@ import {
   useBodyLock,
   useIsVisible,
   useIsTouch,
+  useMediaQuery,
   useReducedMotion,
   useWebGLSupport,
 } from "../../lib/hooks";
@@ -74,6 +75,10 @@ export default function DoorWorld() {
   const sheetRef = useRef<HTMLDivElement | null>(null);
   const webgl = useWebGLSupport();
   const isTouch = useIsTouch();
+  // The phone doors are chosen by width (md:hidden), so the bloom has to
+  // follow the layout too: a narrow window shows those doors but reports a
+  // fine pointer, which used to switch the bloom off.
+  const phoneLayout = useMediaQuery("(max-width: 767px)");
   const reducedMotion = useReducedMotion();
   const { ref, visible } = useIsVisible<HTMLDivElement>();
 
@@ -171,14 +176,18 @@ export default function DoorWorld() {
    * door sits. Reduced-motion users get no bloom.
    */
   const startGlow = (origin: { x: number; y: number } | null) => {
-    // The soft gold bloom is a phone-only touch gesture here. Desktop and
-    // tablet drive their door from the 3D corridor, so they get no burst — the
-    // door just opens inside the corridor and the content sheet settles over it.
-    if (reducedMotion || !isTouch) return;
-    setGlow({
+    // The bloom belongs to the phone doors. Gate it on the layout rather than
+    // the pointer type, so a narrow window and a real touch screen behave the
+    // same; the wide corridor layouts keep their calm door-only opening.
+    if (reducedMotion || !(isTouch || phoneLayout)) return;
+    const bloom = {
       x: origin?.x ?? window.innerWidth / 2,
       y: origin?.y ?? window.innerHeight / 2,
-    });
+    };
+    setGlow(bloom);
+    // onAnimationComplete clears this too, but a re-render can swallow that
+    // callback; the timer guarantees the full-screen layer never lingers.
+    window.setTimeout(() => setGlow((current) => (current === bloom ? null : current)), 1200);
   };
 
   /**
