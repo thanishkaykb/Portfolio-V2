@@ -85,7 +85,9 @@ export default function ContactDialog() {
 
             <div className="mt-6 space-y-3">
               <a
-                href={`mailto:${profile.email}`}
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}`}
+                target="_blank"
+                rel="noreferrer noopener"
                 className="group flex items-center justify-between gap-4 border border-line p-4 transition-colors hover:border-gold"
               >
                 <span className="min-w-0">

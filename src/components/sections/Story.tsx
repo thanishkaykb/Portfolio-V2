@@ -74,8 +74,9 @@ export default function Story() {
               </>
             }
           />
-          <p className="max-w-xs text-sm leading-relaxed text-muted">
-            Every project, every experiment, every milestone, in the order it happened.
+          <p className="max-w-xs border-l border-gold/50 pl-4 text-sm italic leading-relaxed text-bone/80">
+            “Every milestone here began as a blank page I was not sure I could fill. Keep
+            writing.”
           </p>
         </div>
 

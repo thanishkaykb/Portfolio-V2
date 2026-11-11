@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useGithubActivity } from "../../lib/github-live";
-import { cn, useIsTouch, useReducedMotion } from "../../lib/hooks";
+import { useIsTouch, useReducedMotion } from "../../lib/hooks";
 
 /**
  * GitHub activity card, a genuine CSS 3D card showing the public contribution
@@ -426,13 +426,6 @@ export default function GitHubCard() {
           {isTouch ? "Drag or tap" : "Move across the card"}
         </motion.span>
       </div>
-
-      <p className={cn("mt-4 max-w-sm text-center text-xs leading-relaxed text-muted")}>
-        Squares, streaks and totals are read from my public GitHub calendar:{" "}
-        {gh.total.toLocaleString("en-US")} contributions in the last twelve months, and{" "}
-        {gh.total.toLocaleString("en-US")} all-time since my first commit in November 2025, the full
-        history of this account.
-      </p>
     </div>
   );
 }
