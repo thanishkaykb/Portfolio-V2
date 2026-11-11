@@ -1060,7 +1060,9 @@ export const pressClippings: PressClipping[] = [
   { src: "/writing/press/press-1.jpg",
     href: "/writing/press/press-1.jpg", title: "Moon", meta: "Dare to Dream · 17 March 2025" },
   { src: "/writing/press/press-2.jpg",
-    href: "/writing/press/press-2.jpg", title: "Footprints", meta: "Express Y · The Times of India" },
+    href: "/writing/press/press-2.jpg",
+    title: "Footprints",
+    meta: "Express Your Thoughts · 30 August 2024" },
   {
     src: "/writing/press/press-3.jpg",
     href: "/writing/press/press-3.jpg",
@@ -1068,15 +1070,19 @@ export const pressClippings: PressClipping[] = [
     meta: "Canvas & Verses · 20 February 2025",
   },
   { src: "/writing/press/press-4.jpg",
-    href: "/writing/press/press-4.jpg", title: "Colours!", meta: "Express Y · The Times of India" },
+    href: "/writing/press/press-4.jpg",
+    title: "Colours!",
+    meta: "Express Your Thoughts · 8 January 2025" },
   {
     src: "/writing/press/press-5.jpg",
     href: "/writing/press/press-5.jpg",
     title: "Palette of Potential",
-    meta: "Express Y · The Times of India",
+    meta: "Express Your Thoughts · 26 September 2024",
   },
   { src: "/writing/press/press-6.jpg",
-    href: "/writing/press/press-6.jpg", title: "Colours!", meta: "Express Y · 22 January 2025" },
+    href: "/writing/press/press-6.jpg",
+    title: "Colours!",
+    meta: "Express Your Thoughts · 22 January 2025" },
 ];
 
 export type DrivePoem = { n: number; title: string; href: string };

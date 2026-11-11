@@ -471,8 +471,8 @@ export function PoetryShowcase() {
           </p>
         </div>
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
-          The Times of India printed my poems in its school pages six times, under Dare to Dream and
-          Express Y. Tap a page to read the clipping.
+          The Times of India printed my poems in its school pages six times, under Dare to Dream,
+          Express Your Thoughts and Canvas &amp; Verses. Tap a page to read the clipping.
         </p>
 
         <PressStrip
