@@ -258,7 +258,7 @@ function PoemDialog({
           exit={{ y: 12, opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           onClick={(event) => event.stopPropagation()}
-          className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-5 sm:p-7 shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto overscroll-contain scroll-smooth [touch-action:pan-y]"
+          className="relative w-full max-w-xs border border-gold/30 bg-ink-2 p-5 sm:max-w-md sm:p-7 md:max-w-xl lg:max-w-2xl xl:max-w-3xl shadow-[0_30px_90px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto overscroll-contain scroll-smooth [touch-action:pan-y]"
         >
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-baseline gap-3">
