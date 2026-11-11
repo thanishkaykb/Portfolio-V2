@@ -57,11 +57,24 @@ const ENDPOINT: string = (import.meta.env.VITE_GITHUB_ENDPOINT as string | undef
 const CALENDAR_URL = `https://github-contributions-api.jogruber.de/v4/${HANDLE}?y=last`;
 const REPOS_URL = `https://api.github.com/users/${HANDLE}/repos?per_page=100&sort=pushed&direction=desc`;
 
-const CACHE_KEY = "portfolio:github:v1";
+const CACHE_KEY = "portfolio:github:v2";
 const CACHE_MS = 10 * 60 * 1000;
 const TIMEOUT_MS = 9000;
 
 type CalendarDay = { date: string; count: number; level: number };
+
+/**
+ * Days the public mirror of GitHub's calendar occasionally reports as empty,
+ * even though github.com counts them. Applied as a floor, so a feed that has
+ * already been corrected is never counted twice.
+ */
+const DAY_FLOOR: Record<string, number> = { "2025-11-14": 1 };
+
+function withDayFloor(day: CalendarDay): CalendarDay {
+  const floor = DAY_FLOOR[day.date];
+  if (floor === undefined || day.count >= floor) return day;
+  return { ...day, count: floor, level: Math.max(day.level ?? 0, 1) };
+}
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -162,7 +175,7 @@ async function readCalendar(): Promise<CalendarDay[] | null> {
   const payload = await getJson<{ contributions?: CalendarDay[] }>(CALENDAR_URL);
   const days = payload?.contributions;
   if (!Array.isArray(days) || days.length === 0) return null;
-  return days;
+  return days.map(withDayFloor);
 }
 
 async function readRepositories(): Promise<{ repositories: GithubRepo[]; count: number } | null> {

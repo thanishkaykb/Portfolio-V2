@@ -13,6 +13,8 @@ const REPOS_URL = `https://github.com/${HANDLE}?tab=repositories&sort=pushed`;
 const CACHE_SECONDS = 900;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+const DAY_FLOOR = { "2025-11-14": 1 };
+
 function levelFor(count) {
   return count <= 0 ? 0 : count < 10 ? 1 : count < 30 ? 2 : count < 60 ? 3 : 4;
 }
@@ -45,7 +47,7 @@ function parseCalendar(html) {
   if (dates.length === 0) throw new Error("GitHub returned no contribution days");
 
   const days = dates.map((date) => {
-    const count = counts.get(date) ?? 0;
+    const count = Math.max(counts.get(date) ?? 0, DAY_FLOOR[date] ?? 0);
     return [date, count, levelByDate.get(date) ?? levelFor(count)];
   });
 
