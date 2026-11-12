@@ -112,23 +112,6 @@ function PressStrip({
         ))}
       </div>
 
-      {/* Both fades reach the strip's own edge (it is full-bleed on phones), so
-          they read as the page darkening rather than a panel laid on top. */}
-      <div
-        aria-hidden
-        className={cn(
-          "pointer-events-none absolute inset-y-0 -left-4 w-14 bg-gradient-to-r from-ink to-transparent transition-opacity duration-300 sm:left-0",
-          edges.start && "opacity-0",
-        )}
-      />
-      <div
-        aria-hidden
-        className={cn(
-          "pointer-events-none absolute inset-y-0 -right-4 w-14 bg-gradient-to-l from-ink to-transparent transition-opacity duration-300 sm:right-0",
-          edges.end && "opacity-0",
-        )}
-      />
-
       {arrow(-1, "absolute left-1 top-1/2 hidden h-9 w-9 -translate-y-1/2 text-sm sm:grid")}
       {arrow(1, "absolute right-1 top-1/2 hidden h-9 w-9 -translate-y-1/2 text-sm sm:grid")}
 
