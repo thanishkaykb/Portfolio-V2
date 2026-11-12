@@ -420,17 +420,38 @@ export function PoetryShowcase() {
 
   return (
     <div>
-      <SectionHeading
-        label="In print"
-        title={
-          <>
-            Words, before
-            <br />
-            <span className="text-gold">the browser</span><span aria-hidden="true">.</span>
-          </>
-        }
-        sub="I am a published anthology poet: two collections with Writer's Pocket, a 42 poem collection of my own, and six poems printed in The Times of India."
-      />
+      <div className="grid gap-8 lg:grid-cols-12 lg:items-start lg:gap-10">
+        <div className="lg:col-span-8">
+          <SectionHeading
+            label="In print"
+            title={
+              <>
+                Words, before
+                <br />
+                <span className="text-gold">the browser</span><span aria-hidden="true">.</span>
+              </>
+            }
+            sub="I am a published anthology poet: two collections with Writer's Pocket, a 42 poem collection of my own, and six poems printed in The Times of India."
+          />
+        </div>
+
+        {/* Sits level with the headline on laptop; not needed on phones. */}
+        <blockquote className="hidden lg:col-span-4 lg:block lg:border-l lg:border-line lg:pl-6 lg:pt-9">
+          <p className="display text-[clamp(1.05rem,1.7vw,1.4rem)] leading-snug text-bone/90">
+            <span aria-hidden className="text-gold/70">
+              “
+            </span>
+            Nothing you felt was wasted. It became something you could write down, and then
+            something someone else could read.
+            <span aria-hidden className="text-gold/70">
+              ”
+            </span>
+          </p>
+          <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.2em] text-muted">
+            On writing, and why I keep going
+          </p>
+        </blockquote>
+      </div>
 
       <dl className="mt-10 grid grid-cols-3 border-y border-line">
         {facts.map((fact) => (
